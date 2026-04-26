@@ -326,7 +326,6 @@ Future storage:
 jinguzhou/
   pyproject.toml
   README.md
-  jinguzhou.txt
   docs/
     DEVELOPMENT_PLAN.md
     POLICY_SPEC.md
@@ -629,4 +628,3 @@ priority.
 - Writes structured audit logs
 - Has tests for core behavior
 - Has examples and policy documentation
-

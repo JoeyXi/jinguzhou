@@ -1,0 +1,24 @@
+<svg width="960" height="300" viewBox="0 0 960 300" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Jinguzhou logo</title>
+  <desc id="desc">A flat golden tightening hoop inspired by Sun Wukong's headband, with two inward spiral curls.</desc>
+  <rect width="960" height="300" fill="none"/>
+  <g transform="translate(40 18)">
+    <path d="M70 128C122 66 285 32 440 32C595 32 758 66 810 128C758 190 595 224 440 224C285 224 122 190 70 128Z"
+          stroke="#D8A72F" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M70 128C122 66 285 32 440 32C595 32 758 66 810 128C758 190 595 224 440 224C285 224 122 190 70 128Z"
+          stroke="#F7D766" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <path d="M429 154C390 178 342 176 314 148C286 120 292 75 326 54C360 33 404 45 418 77C432 109 407 139 375 135C343 131 332 100 352 83C372 66 396 78 399 96"
+          stroke="#D8A72F" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M451 154C490 178 538 176 566 148C594 120 588 75 554 54C520 33 476 45 462 77C448 109 473 139 505 135C537 131 548 100 528 83C508 66 484 78 481 96"
+          stroke="#D8A72F" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <path d="M429 154C390 178 342 176 314 148C286 120 292 75 326 54C360 33 404 45 418 77C432 109 407 139 375 135C343 131 332 100 352 83C372 66 396 78 399 96"
+          stroke="#FFE58A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M451 154C490 178 538 176 566 148C594 120 588 75 554 54C520 33 476 45 462 77C448 109 473 139 505 135C537 131 548 100 528 83C508 66 484 78 481 96"
+          stroke="#FFE58A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <circle cx="399" cy="96" r="9" fill="#B98216"/>
+    <circle cx="481" cy="96" r="9" fill="#B98216"/>
+  </g>
+</svg>

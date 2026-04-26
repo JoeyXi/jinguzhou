@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Jinguzhou mark</title>
+  <desc id="desc">A flat golden tightening hoop mark with symmetrical inner spirals.</desc>
+  <rect width="512" height="512" rx="96" fill="#111827"/>
+  <path d="M60 256C92 194 170 162 256 162C342 162 420 194 452 256C420 318 342 350 256 350C170 350 92 318 60 256Z"
+        stroke="#D8A72F" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 256C92 194 170 162 256 162C342 162 420 194 452 256C420 318 342 350 256 350C170 350 92 318 60 256Z"
+        stroke="#FFE58A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M249 275C219 298 181 293 164 266C147 239 160 204 188 193C216 182 245 198 248 226C251 254 223 271 202 257C181 243 190 217 209 217"
+        stroke="#D8A72F" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M263 275C293 298 331 293 348 266C365 239 352 204 324 193C296 182 267 198 264 226C261 254 289 271 310 257C331 243 322 217 303 217"
+        stroke="#D8A72F" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M249 275C219 298 181 293 164 266C147 239 160 204 188 193C216 182 245 198 248 226C251 254 223 271 202 257C181 243 190 217 209 217"
+        stroke="#FFE58A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M263 275C293 298 331 293 348 266C365 239 352 204 324 193C296 182 267 198 264 226C261 254 289 271 310 257C331 243 322 217 303 217"
+        stroke="#FFE58A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="209" cy="217" r="7" fill="#B98216"/>
+  <circle cx="303" cy="217" r="7" fill="#B98216"/>
+</svg>

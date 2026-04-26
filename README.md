@@ -1,4 +1,8 @@
-# Jinguzhou
+<p align="center">
+  <img src="assets/jinguzhou-logo.svg" alt="Jinguzhou golden tightening hoop logo" width="560">
+</p>
+
+<h1 align="center">Jinguzhou</h1>
 
 Jinguzhou is an open-source safety gateway for LLM applications.
 
