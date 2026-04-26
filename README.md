@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/jinguzhou-logo.svg" alt="Jinguzhou golden tightening hoop logo" width="560">
-</p>
-
 <h1 align="center">Jinguzhou</h1>
 
 <p align="center">
