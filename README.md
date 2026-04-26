@@ -4,6 +4,10 @@
 
 <h1 align="center">Jinguzhou</h1>
 
+<p align="center">
+  <img src="golden_circlet.png" alt="Jinguzhou golden circlet promotional image" width="760">
+</p>
+
 Jinguzhou is an open-source safety gateway for LLM applications.
 
 It is designed as an external control layer that helps developers define,
