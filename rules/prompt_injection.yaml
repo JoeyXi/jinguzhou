@@ -1,0 +1,16 @@
+version: 1
+name: prompt-injection
+description: Detect attempts to override system rules or exfiltrate hidden context.
+rules:
+  - id: prompt_injection.override.warn
+    stage: input
+    category: prompt_injection
+    severity: high
+    action: warn
+    reason: Request appears to try to override hidden instructions or safety rules.
+    match:
+      any_keywords:
+        - "ignore previous instructions"
+        - "reveal the system prompt"
+        - "disregard safety policy"
+

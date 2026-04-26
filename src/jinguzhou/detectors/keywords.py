@@ -1,0 +1,1 @@
+"""Keyword detector extension point."""

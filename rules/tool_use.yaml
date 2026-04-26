@@ -1,0 +1,72 @@
+version: 1
+name: tool-use
+description: Default policy for tool and action safety.
+rules:
+  - id: tool.shell.destructive.require_review
+    stage: tool
+    category: tool_use
+    severity: high
+    action: require_human_review
+    reason: Shell command appears capable of destructive system modification.
+    match:
+      tool_name: shell
+      command_contains:
+        - "rm "
+        - "chmod "
+        - "curl "
+
+  - id: tool.filesystem.system_write.block
+    stage: tool
+    category: filesystem
+    severity: critical
+    action: block
+    reason: Writes to system paths are blocked by default.
+    match:
+      tool_name: filesystem.write
+      path_sensitivity_in:
+        - system
+
+  - id: tool.filesystem.secrets.review
+    stage: tool
+    category: filesystem
+    severity: high
+    action: require_human_review
+    reason: Access to likely secret-bearing paths requires review.
+    match:
+      tool_name: filesystem.read
+      path_sensitivity_in:
+        - secrets
+
+  - id: tool.network.public_tunnel.review
+    stage: tool
+    category: network
+    severity: high
+    action: require_human_review
+    reason: Requests to public tunnel or paste domains require review.
+    match:
+      tool_name: network.request
+      domain_suffix_in:
+        - ngrok.io
+        - pastebin.com
+
+  - id: tool.database.destructive.block
+    stage: tool
+    category: database
+    severity: critical
+    action: block
+    reason: Destructive database operations are blocked by default.
+    match:
+      tool_name: database.query
+      db_operation_in:
+        - drop
+        - truncate
+        - alter
+
+  - id: tool.payment.block
+    stage: tool
+    category: finance
+    severity: critical
+    action: block
+    reason: Payments should be blocked by default in the baseline policy.
+    match:
+      tool_name: payment.execute

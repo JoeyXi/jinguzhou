@@ -1,0 +1,183 @@
+"""CLI entrypoint for Jinguzhou."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+import typer
+import uvicorn
+
+from jinguzhou.approvals.tokens import ApprovalTokenManager
+from jinguzhou.audit.query import query_audit_events, replay_audit_events
+from jinguzhou.config import load_runtime_config
+from jinguzhou.gateway.runtime import build_app_from_config
+from jinguzhou.policy.engine import PolicyEngine
+from jinguzhou.policy.loader import load_policy_files
+from jinguzhou.policy.models import EvaluationContext
+
+app = typer.Typer(help="Jinguzhou safety gateway and policy tooling.")
+audit_app = typer.Typer(help="Audit helpers.")
+approval_app = typer.Typer(help="Human approval token helpers.")
+app.add_typer(audit_app, name="audit")
+app.add_typer(approval_app, name="approval")
+
+
+def _load_engine(policy_paths: list[Path]) -> PolicyEngine:
+    policy = load_policy_files(policy_paths)
+    return PolicyEngine(policy=policy)
+
+
+@app.command("check-input")
+def check_input(
+    policy: list[Path] = typer.Option(..., help="One or more policy files to load."),
+    text: str = typer.Argument(..., help="Input text to evaluate."),
+    model: str = "",
+    provider: str = "",
+) -> None:
+    """Evaluate an input string against a policy file."""
+    engine = _load_engine(policy)
+    result = engine.evaluate(
+        EvaluationContext(stage="input", text=text, model=model, provider=provider)
+    )
+    typer.echo(result.model_dump_json(indent=2))
+
+
+@app.command("check-output")
+def check_output(
+    policy: list[Path] = typer.Option(..., help="One or more policy files to load."),
+    text: str = typer.Argument(..., help="Output text to evaluate."),
+    model: str = "",
+    provider: str = "",
+) -> None:
+    """Evaluate an output string against a policy file."""
+    engine = _load_engine(policy)
+    result = engine.evaluate(
+        EvaluationContext(stage="output", text=text, model=model, provider=provider)
+    )
+    typer.echo(result.model_dump_json(indent=2))
+
+
+@app.command("check-tool")
+def check_tool(
+    tool: str = typer.Argument(..., help="Tool name to evaluate."),
+    policy: list[Path] = typer.Option(..., help="One or more policy files to load."),
+    payload: str = typer.Option("{}", help="JSON payload for the tool request."),
+    model: str = "",
+    provider: str = "",
+) -> None:
+    """Evaluate a tool action against a policy file."""
+    engine = _load_engine(policy)
+    parsed_payload: Any = json.loads(payload)
+    result = engine.evaluate(
+        EvaluationContext(
+            stage="tool",
+            tool_name=tool,
+            tool_payload=parsed_payload,
+            model=model,
+            provider=provider,
+        )
+    )
+    typer.echo(result.model_dump_json(indent=2))
+
+
+@app.command("gateway")
+def gateway(
+    config: Path = typer.Option(..., help="Path to a Jinguzhou runtime config YAML file."),
+    host: str = typer.Option("", help="Optional host override."),
+    port: int = typer.Option(0, help="Optional port override."),
+) -> None:
+    """Run the Jinguzhou gateway with runtime configuration."""
+    runtime_config = load_runtime_config(config)
+    app_instance = build_app_from_config(runtime_config, config.resolve().parent)
+    listen_host = host or runtime_config.gateway.host
+    listen_port = port or runtime_config.gateway.port
+
+    typer.echo(f"Starting Jinguzhou gateway on http://{listen_host}:{listen_port}")
+    uvicorn.run(app_instance, host=listen_host, port=listen_port)
+
+
+@audit_app.command("tail")
+def audit_tail(file: Path, lines: int = 20) -> None:
+    """Print the last few audit lines."""
+    if not file.exists():
+        raise typer.BadParameter(f"Audit file not found: {file}")
+
+    content = file.read_text(encoding="utf-8").splitlines()
+    for entry in content[-lines:]:
+        typer.echo(entry)
+
+
+@audit_app.command("query")
+def audit_query(
+    file: Path,
+    request_id: str = "",
+    stage: str = "",
+    decision: str = "",
+    rule_id: str = "",
+    limit: int = 50,
+) -> None:
+    """Query audit events and print JSONL results."""
+    for event in query_audit_events(
+        file,
+        request_id=request_id,
+        stage=stage,
+        decision=decision,
+        rule_id=rule_id,
+        limit=limit,
+    ):
+        typer.echo(event.model_dump_json())
+
+
+@audit_app.command("replay")
+def audit_replay(file: Path, request_id: str = "") -> None:
+    """Replay a compact audit timeline."""
+    for line in replay_audit_events(file, request_id=request_id):
+        typer.echo(line)
+
+
+@approval_app.command("issue")
+def approval_issue(
+    secret: str = typer.Option(..., help="Shared approval signing secret."),
+    request_id: str = typer.Option(..., help="Gateway request ID to approve."),
+    stage: str = typer.Option(..., help="Stage to approve: input, output, or tool."),
+    rule_id: list[str] = typer.Option(..., help="Rule IDs covered by the approval."),
+    approver: str = "",
+    reason: str = "",
+    ttl_seconds: int = 900,
+) -> None:
+    """Issue a signed approval token for a pending human-review decision."""
+    token = ApprovalTokenManager(secret).issue(
+        request_id=request_id,
+        stage=stage,
+        rule_ids=rule_id,
+        approver=approver,
+        reason=reason,
+        ttl_seconds=ttl_seconds,
+    )
+    typer.echo(token)
+
+
+@approval_app.command("decode")
+def approval_decode(secret: str, token: str) -> None:
+    """Verify and decode an approval token."""
+    claims = ApprovalTokenManager(secret).decode(token)
+    typer.echo(claims.model_dump_json(indent=2))
+
+
+@app.command("version")
+def version() -> None:
+    """Print the current package version."""
+    from jinguzhou import __version__
+
+    typer.echo(__version__)
+
+
+def main() -> None:
+    """Run the CLI."""
+    app()
+
+
+if __name__ == "__main__":
+    main()

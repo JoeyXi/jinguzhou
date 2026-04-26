@@ -1,0 +1,27 @@
+version: 1
+name: baseline-human-safety
+description: Core protections for harmful human-directed requests.
+rules:
+  - id: human_harm.instructions.block
+    stage: input
+    category: human_harm
+    severity: critical
+    action: block
+    reason: Request appears to ask for instructions that could directly harm people.
+    match:
+      any_keywords:
+        - "how to kill"
+        - "make a bomb"
+        - "poison someone"
+
+  - id: output.harmful_instructions.block
+    stage: output
+    category: human_harm
+    severity: critical
+    action: block
+    reason: Output appears to contain dangerous instructions that could harm people.
+    match:
+      any_keywords:
+        - "steps to make a bomb"
+        - "best poison dosage"
+
