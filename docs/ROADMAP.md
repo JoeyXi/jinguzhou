@@ -35,3 +35,19 @@
 - Tool adapter registry
 - Nested field extraction
 - Human approval tokens
+
+## Planned For 0.2.0 Developer Experience
+
+Goal: make Jinguzhou easy to install, initialize, validate, and run as a local
+developer gateway.
+
+- Versioned `0.2.0` release with changelog notes
+- `jinguzhou init` starter config generation
+- `jinguzhou validate-config` runtime and policy validation
+- Dockerfile and documented container quick start
+- clearer README onboarding path
+- developer setup guide
+- release validation updated for 0.2
+- tests for new developer-facing commands
+
+See [0.2 release plan](V0.2_RELEASE_PLAN.md).
