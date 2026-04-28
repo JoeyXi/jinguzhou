@@ -156,6 +156,67 @@ JINGUZHOU_APPROVAL_SECRET=change_me \
 docker compose up --build
 ```
 
+## npm Launcher
+
+The npm package is a thin launcher for the Python CLI:
+
+```bash
+python3 -m pip install jinguzhou
+npx @jinguzhou/cli version
+```
+
+Package source:
+
+```text
+packages/npm-cli/
+```
+
+## Helm
+
+The repository includes a starter chart:
+
+```bash
+helm install jinguzhou charts/jinguzhou
+```
+
+Set existing Kubernetes secrets for provider and approval values in
+`charts/jinguzhou/values.yaml`.
+
+## Audit Backends
+
+Default audit storage is JSONL. Postgres storage is optional:
+
+```yaml
+audit:
+  enabled: true
+  backend: "postgres"
+  postgres_dsn_env: "JINGUZHOU_POSTGRES_DSN"
+  postgres_table: "jinguzhou_audit_events"
+```
+
+Install the optional dependency:
+
+```bash
+pip install "jinguzhou[postgres]"
+```
+
+## Local Dashboard
+
+The gateway exposes a local status page:
+
+```text
+GET /dashboard
+```
+
+Approval queue integrations can mount behind:
+
+```text
+GET /approvals/pending
+```
+
+Set `JINGUZHOU_ADMIN_API_KEY` to require `x-jinguzhou-admin-key` on these
+control-plane endpoints.
+
 ## Validation Examples
 
 Run the bundled offline validation examples:

@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from jinguzhou.audit.logger import JsonlAuditLogger
+from jinguzhou.audit.postgres import PostgresAuditLogger
 from jinguzhou.approvals.tokens import ApprovalTokenManager
 from jinguzhou.config import RuntimeConfig
 from jinguzhou.gateway.app import create_app
@@ -23,7 +24,16 @@ def build_app_from_config(config: RuntimeConfig, config_dir: Path):
 
     audit_logger = None
     if config.audit.enabled:
-        audit_logger = JsonlAuditLogger(config_dir / config.audit.path, redact=config.audit.redact)
+        if config.audit.backend == "jsonl":
+            audit_logger = JsonlAuditLogger(config_dir / config.audit.path, redact=config.audit.redact)
+        elif config.audit.backend == "postgres":
+            audit_logger = PostgresAuditLogger(
+                config.audit.postgres_dsn,
+                table=config.audit.postgres_table,
+                redact=config.audit.redact,
+            )
+        else:
+            raise ValueError(f"Unsupported audit backend: {config.audit.backend}")
 
     approval_manager = None
     if config.approvals.enabled and config.approvals.secret:
@@ -48,4 +58,5 @@ def build_app_from_config(config: RuntimeConfig, config_dir: Path):
         audit_logger=audit_logger,
         tool_adapter_registry=tool_adapter_registry,
         approval_manager=approval_manager,
+        admin_api_key=config.security.admin_api_key,
     )

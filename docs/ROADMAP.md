@@ -51,5 +51,24 @@ local gateway.
 - developer setup guide
 - release validation updated for 0.2
 - tests for new developer-facing commands
+- CLI text output for local checks and config validation
+- optional Postgres audit backend
+- npm launcher package scaffold
+- PyPI release workflow
+- starter Helm chart
+- local dashboard status page
 
 See [0.2 release plan](V0.2_RELEASE_PLAN.md).
+
+## External Release Tasks
+
+These require registry, cluster, or organization configuration outside the
+repository:
+
+- publish `jinguzhou` to PyPI
+- publish `@jinguzhou/cli` to npm
+- configure GitHub trusted publishing environment `pypi`
+- render and test the Helm chart in a Kubernetes cluster
+- build and push a container image
+- choose the approval inbox provider for Slack or Teams
+- choose the identity provider for OIDC or SSO

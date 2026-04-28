@@ -6,11 +6,10 @@ from typing import Any, Optional
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from jinguzhou import __version__
 from jinguzhou.audit.events import AuditEvent
-from jinguzhou.audit.logger import JsonlAuditLogger
 from jinguzhou.approvals.tokens import ApprovalClaims, ApprovalTokenManager
 from jinguzhou.gateway.schemas import GatewayError, GatewayErrorResponse, GatewaySafetyResult
 from jinguzhou.policy.engine import PolicyEngine
@@ -84,7 +83,7 @@ def _provider_name(provider: Optional[ProviderAdapter]) -> str:
 
 
 def _write_audit_event(
-    audit_logger: Optional[JsonlAuditLogger],
+    audit_logger: Optional[Any],
     *,
     request_id: str,
     event_type: str,
@@ -214,9 +213,10 @@ def create_app(
     *,
     policy_engine: Optional[PolicyEngine] = None,
     provider: Optional[ProviderAdapter] = None,
-    audit_logger: Optional[JsonlAuditLogger] = None,
+    audit_logger: Optional[Any] = None,
     tool_adapter_registry: Optional[ToolAdapterRegistry] = None,
     approval_manager: Optional[ApprovalTokenManager] = None,
+    admin_api_key: str = "",
 ) -> FastAPI:
     """Create a FastAPI gateway app with injectable dependencies."""
     app = FastAPI(title="Jinguzhou Gateway", version=__version__)
@@ -225,6 +225,22 @@ def create_app(
     app.state.audit_logger = audit_logger
     app.state.tool_adapter_registry = tool_adapter_registry or ToolAdapterRegistry.with_defaults()
     app.state.approval_manager = approval_manager
+    app.state.admin_api_key = admin_api_key
+
+    def _admin_forbidden(request: Request) -> Optional[JSONResponse]:
+        expected = app.state.admin_api_key
+        if not expected:
+            return None
+        supplied = request.headers.get("x-jinguzhou-admin-key", "")
+        if supplied == expected:
+            return None
+        response = GatewayErrorResponse(
+            error=GatewayError(
+                code="admin_auth_required",
+                message="Admin API key is required for this endpoint.",
+            )
+        )
+        return JSONResponse(status_code=401, content=response.model_dump(mode="json"))
 
     @app.get("/health")
     def health() -> dict[str, str]:
@@ -235,6 +251,56 @@ def create_app(
     def version() -> dict[str, str]:
         """Gateway version endpoint."""
         return {"version": __version__}
+
+    @app.get("/dashboard", response_class=HTMLResponse)
+    def dashboard(request: Request) -> Any:
+        """Minimal status page for local operators."""
+        forbidden = _admin_forbidden(request)
+        if forbidden is not None:
+            return forbidden
+        policy_name = ""
+        if app.state.policy_engine is not None:
+            policy_name = app.state.policy_engine.policy.name
+        audit_backend = app.state.audit_logger.__class__.__name__ if app.state.audit_logger else "disabled"
+        provider_name = _provider_name(app.state.provider) or "not configured"
+        return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Jinguzhou Gateway</title>
+  <style>
+    body {{ font-family: system-ui, sans-serif; margin: 2rem; color: #111827; }}
+    main {{ max-width: 720px; }}
+    dt {{ font-weight: 700; margin-top: 1rem; }}
+    dd {{ margin-left: 0; }}
+    code {{ background: #f3f4f6; padding: 0.1rem 0.25rem; }}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Jinguzhou Gateway</h1>
+    <dl>
+      <dt>Version</dt><dd><code>{__version__}</code></dd>
+      <dt>Policy</dt><dd><code>{policy_name or "none"}</code></dd>
+      <dt>Provider</dt><dd><code>{provider_name}</code></dd>
+      <dt>Audit</dt><dd><code>{audit_backend}</code></dd>
+      <dt>Approval</dt><dd><code>{"enabled" if app.state.approval_manager else "disabled"}</code></dd>
+    </dl>
+  </main>
+</body>
+</html>"""
+
+    @app.get("/approvals/pending")
+    def pending_approvals(request: Request) -> Any:
+        """Approval queue extension point."""
+        forbidden = _admin_forbidden(request)
+        if forbidden is not None:
+            return forbidden
+        return {
+            "status": "ok",
+            "pending": [],
+            "message": "External approval stores can mount behind this endpoint.",
+        }
 
     @app.post("/v1/chat/completions")
     async def chat_completions(payload: dict[str, Any], request: Request) -> Any:

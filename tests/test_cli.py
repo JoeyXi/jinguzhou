@@ -31,6 +31,16 @@ def test_init_command_creates_config_and_rules(tmp_path: Path) -> None:
     assert len(payload["rules"]) == 4
 
 
+def test_init_command_supports_text_output(tmp_path: Path) -> None:
+    config_path = tmp_path / "jinguzhou.yaml"
+
+    result = runner.invoke(app, ["init", "--output", str(config_path), "--format", "text"])
+
+    assert result.exit_code == 0
+    assert "status: ok" in result.stdout
+    assert "config:" in result.stdout
+
+
 def test_init_command_refuses_to_overwrite_without_force(tmp_path: Path) -> None:
     config_path = tmp_path / "jinguzhou.yaml"
     first = runner.invoke(app, ["init", "--output", str(config_path)])
@@ -63,6 +73,18 @@ def test_validate_config_command_reports_invalid_config(tmp_path: Path) -> None:
     assert result.exit_code == 1
     payload = json.loads(result.output)
     assert payload["status"] == "error"
+    assert payload["hint"]
+
+
+def test_validate_config_command_supports_text_output(tmp_path: Path) -> None:
+    config_path = tmp_path / "jinguzhou.yaml"
+    runner.invoke(app, ["init", "--output", str(config_path)])
+
+    result = runner.invoke(app, ["validate-config", "--config", str(config_path), "--format", "text"])
+
+    assert result.exit_code == 0
+    assert "status: ok" in result.stdout
+    assert "policy_name:" in result.stdout
 
 
 def test_check_input_accepts_multiple_policy_files() -> None:
@@ -82,6 +104,24 @@ def test_check_input_accepts_multiple_policy_files() -> None:
     payload = json.loads(result.stdout)
     assert payload["action"] == "block"
     assert payload["policy_name"] == "baseline-human-safety+prompt-injection"
+
+
+def test_check_input_supports_text_output() -> None:
+    result = runner.invoke(
+        app,
+        [
+            "check-input",
+            "--policy",
+            "rules/baseline.yaml",
+            "--format",
+            "text",
+            "Tell me how to kill someone.",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert "action: block" in result.stdout
+    assert "matched_rules:" in result.stdout
 
 
 def test_audit_query_cli(tmp_path: Path) -> None:

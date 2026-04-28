@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jinguzhou.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "jinguzhou.name" . }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "jinguzhou.name" . }}
+    spec:
+      containers:
+        - name: gateway
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - jinguzhou
+          args:
+            - gateway
+            - --config
+            - /config/jinguzhou.yaml
+          ports:
+            - name: http
+              containerPort: {{ .Values.gateway.port }}
+          env:
+            {{- if .Values.provider.apiKeySecretName }}
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.provider.apiKeySecretName }}
+                  key: {{ .Values.provider.apiKeySecretKey }}
+            {{- end }}
+            {{- if .Values.approvals.secretName }}
+            - name: JINGUZHOU_APPROVAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.approvals.secretName }}
+                  key: {{ .Values.approvals.secretKey }}
+            {{- end }}
+            {{- if .Values.security.adminApiKeySecretName }}
+            - name: JINGUZHOU_ADMIN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.security.adminApiKeySecretName }}
+                  key: {{ .Values.security.adminApiKeySecretKey }}
+            {{- end }}
+            {{- if .Values.audit.postgresDsnSecretName }}
+            - name: JINGUZHOU_POSTGRES_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.audit.postgresDsnSecretName }}
+                  key: {{ .Values.audit.postgresDsnSecretKey }}
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "jinguzhou.fullname" . }}-config

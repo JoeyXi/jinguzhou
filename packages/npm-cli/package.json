@@ -1,0 +1,16 @@
+{
+  "name": "@jinguzhou/cli",
+  "version": "0.2.0",
+  "description": "Thin npm launcher for the Jinguzhou Python CLI.",
+  "license": "MIT",
+  "bin": {
+    "jinguzhou": "bin/jinguzhou.js"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

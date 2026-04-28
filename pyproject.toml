@@ -38,6 +38,9 @@ dependencies = [
 dev = [
   "pytest>=8.0,<9.0",
 ]
+postgres = [
+  "psycopg[binary]>=3.2,<4.0",
+]
 
 [project.scripts]
 jinguzhou = "jinguzhou.cli:app"

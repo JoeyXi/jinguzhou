@@ -19,7 +19,10 @@ setup(
     extras_require={
         "dev": [
             "pytest>=8.0,<9.0",
-        ]
+        ],
+        "postgres": [
+            "psycopg[binary]>=3.2,<4.0",
+        ],
     },
     entry_points={
         "console_scripts": [

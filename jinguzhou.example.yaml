@@ -17,13 +17,19 @@ provider:
 
 audit:
   enabled: true
+  backend: "jsonl"
   path: ".jinguzhou/audit.jsonl"
   redact: true
+  postgres_dsn_env: "JINGUZHOU_POSTGRES_DSN"
+  postgres_table: "jinguzhou_audit_events"
 
 approvals:
   enabled: true
   secret_env: "JINGUZHOU_APPROVAL_SECRET"
   ttl_seconds: 900
+
+security:
+  admin_api_key_env: "JINGUZHOU_ADMIN_API_KEY"
 
 tool_adapters:
   - name: "custom-http-tool"

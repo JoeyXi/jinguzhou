@@ -5,6 +5,7 @@ Jinguzhou audit records capture policy decisions for review and debugging.
 ## MVP Storage
 
 - JSONL file
+- Optional Postgres table
 
 ## Event Fields
 
@@ -34,6 +35,27 @@ Jinguzhou audit records capture policy decisions for review and debugging.
 - `gateway_error`
 - `approval`
 - `system_event`
+
+## Postgres Backend
+
+Config:
+
+```yaml
+audit:
+  enabled: true
+  backend: "postgres"
+  postgres_dsn_env: "JINGUZHOU_POSTGRES_DSN"
+  postgres_table: "jinguzhou_audit_events"
+```
+
+Install:
+
+```bash
+pip install "jinguzhou[postgres]"
+```
+
+The backend creates the target table if it does not exist. The table stores the
+stable event fields used for filtering plus the full JSON payload.
 
 ## Query CLI
 

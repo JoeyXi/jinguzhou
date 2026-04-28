@@ -64,6 +64,39 @@ def test_health_endpoint() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_dashboard_endpoint_reports_gateway_status() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    response = client.get("/dashboard")
+
+    assert response.status_code == 200
+    assert "Jinguzhou Gateway" in response.text
+    assert "0.2.0" in response.text
+
+
+def test_pending_approvals_endpoint_is_extension_point() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    response = client.get("/approvals/pending")
+
+    assert response.status_code == 200
+    assert response.json()["pending"] == []
+
+
+def test_admin_api_key_protects_control_plane_endpoints() -> None:
+    app = create_app(admin_api_key="secret")
+    client = TestClient(app)
+
+    blocked = client.get("/approvals/pending")
+    allowed = client.get("/approvals/pending", headers={"x-jinguzhou-admin-key": "secret"})
+
+    assert blocked.status_code == 401
+    assert blocked.json()["error"]["code"] == "admin_auth_required"
+    assert allowed.status_code == 200
+
+
 def test_chat_completions_safe_request_passes_through(tmp_path: Path) -> None:
     provider = FakeProvider(
         {

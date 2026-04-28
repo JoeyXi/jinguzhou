@@ -26,10 +26,14 @@ def test_runtime_config_resolves_api_key_from_env(tmp_path: Path) -> None:
                 "audit:",
                 "  enabled: true",
                 "  path: .jinguzhou/audit.jsonl",
+                "  backend: postgres",
+                "  postgres_dsn_env: TEST_POSTGRES_DSN",
                 "approvals:",
                 "  enabled: true",
                 "  secret_env: TEST_APPROVAL_SECRET",
                 "  ttl_seconds: 120",
+                "security:",
+                "  admin_api_key_env: TEST_ADMIN_API_KEY",
             ]
         ),
         encoding="utf-8",
@@ -37,7 +41,12 @@ def test_runtime_config_resolves_api_key_from_env(tmp_path: Path) -> None:
 
     config = load_runtime_config(
         config_path,
-        env={"TEST_OPENAI_KEY": "secret-key", "TEST_APPROVAL_SECRET": "approval-secret"},
+        env={
+            "TEST_OPENAI_KEY": "secret-key",
+            "TEST_APPROVAL_SECRET": "approval-secret",
+            "TEST_POSTGRES_DSN": "postgresql://localhost/jinguzhou",
+            "TEST_ADMIN_API_KEY": "admin-secret",
+        },
     )
 
     assert config.gateway.host == "0.0.0.0"
@@ -45,8 +54,11 @@ def test_runtime_config_resolves_api_key_from_env(tmp_path: Path) -> None:
     assert config.provider.api_key == "secret-key"
     assert config.provider.timeout_seconds == 12.5
     assert config.provider.headers["X-Test-Header"] == "config-value"
+    assert config.audit.backend == "postgres"
+    assert config.audit.postgres_dsn == "postgresql://localhost/jinguzhou"
     assert config.approvals.secret == "approval-secret"
     assert config.approvals.ttl_seconds == 120
+    assert config.security.admin_api_key == "admin-secret"
     assert config.tool_adapters == []
 
 

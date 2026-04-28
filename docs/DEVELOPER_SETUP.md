@@ -108,6 +108,66 @@ JINGUZHOU_APPROVAL_SECRET=change_me \
 docker compose up --build
 ```
 
+## npm Launcher
+
+The npm package in `packages/npm-cli` invokes the Python CLI. Install the Python
+package first:
+
+```bash
+python3 -m pip install jinguzhou
+npx @jinguzhou/cli version
+```
+
+During local development, run the launcher from the package directory:
+
+```bash
+node packages/npm-cli/bin/jinguzhou.js version
+```
+
+## Helm Chart
+
+Render or install the starter chart:
+
+```bash
+helm template jinguzhou charts/jinguzhou
+helm install jinguzhou charts/jinguzhou
+```
+
+Configure provider keys and approval secrets through existing Kubernetes
+secrets in `charts/jinguzhou/values.yaml`.
+
+## Postgres Audit Backend
+
+Install the optional dependency:
+
+```bash
+pip install "jinguzhou[postgres]"
+```
+
+Config:
+
+```yaml
+audit:
+  enabled: true
+  backend: "postgres"
+  postgres_dsn_env: "JINGUZHOU_POSTGRES_DSN"
+  postgres_table: "jinguzhou_audit_events"
+```
+
+## Control-Plane API Key
+
+Set an admin key to protect local control-plane endpoints:
+
+```bash
+export JINGUZHOU_ADMIN_API_KEY=change_me
+```
+
+Clients must send:
+
+```text
+x-jinguzhou-admin-key: change_me
+```
+
 ## Developer Quickstart Example
 
 The repository includes a quickstart project:

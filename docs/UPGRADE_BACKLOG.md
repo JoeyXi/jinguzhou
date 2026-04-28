@@ -33,6 +33,7 @@ adapter-registry baseline.
 - Structured health endpoint with provider and policy readiness
 - Config validation CLI
 - Docker image and containerized quick start
+- Helm chart hardening for production deployments
 - CI matrix for Python versions and linting
 
 ## Developer Experience
@@ -41,3 +42,11 @@ adapter-registry baseline.
 - Cookbook for writing custom tool adapters
 - More readable CLI output for policy decisions
 - Example policy packs for sandboxed agents and enterprise bots
+
+## Control Plane
+
+- Persisted approval queue
+- Slack and Teams approval adapters
+- OIDC or SSO integration
+- Role-based access checks beyond the current admin API key
+- Dashboard views backed by audit queries

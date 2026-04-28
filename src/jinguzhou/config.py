@@ -55,8 +55,12 @@ class AuditSettings(BaseModel):
     """Audit logging configuration."""
 
     enabled: bool = True
+    backend: str = "jsonl"
     path: str = ".jinguzhou/audit.jsonl"
     redact: bool = True
+    postgres_dsn: str = ""
+    postgres_dsn_env: str = "JINGUZHOU_POSTGRES_DSN"
+    postgres_table: str = "jinguzhou_audit_events"
 
 
 class ApprovalSettings(BaseModel):
@@ -68,6 +72,13 @@ class ApprovalSettings(BaseModel):
     ttl_seconds: int = 900
 
 
+class SecuritySettings(BaseModel):
+    """Control-plane access settings."""
+
+    admin_api_key: str = ""
+    admin_api_key_env: str = "JINGUZHOU_ADMIN_API_KEY"
+
+
 class RuntimeConfig(BaseModel):
     """Top-level runtime configuration."""
 
@@ -76,6 +87,7 @@ class RuntimeConfig(BaseModel):
     provider: ProviderSettings = Field(default_factory=ProviderSettings)
     audit: AuditSettings = Field(default_factory=AuditSettings)
     approvals: ApprovalSettings = Field(default_factory=ApprovalSettings)
+    security: SecuritySettings = Field(default_factory=SecuritySettings)
     tool_adapters: list[ToolAdapterConfig] = Field(default_factory=list)
 
 
@@ -92,5 +104,9 @@ def load_runtime_config(
         config.provider.api_key = env_map.get(config.provider.api_key_env, "")
     if not config.approvals.secret and config.approvals.secret_env:
         config.approvals.secret = env_map.get(config.approvals.secret_env, "")
+    if not config.audit.postgres_dsn and config.audit.postgres_dsn_env:
+        config.audit.postgres_dsn = env_map.get(config.audit.postgres_dsn_env, "")
+    if not config.security.admin_api_key and config.security.admin_api_key_env:
+        config.security.admin_api_key = env_map.get(config.security.admin_api_key_env, "")
 
     return config
