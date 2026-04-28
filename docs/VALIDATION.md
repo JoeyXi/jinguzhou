@@ -1,7 +1,6 @@
 # Validation Guide
 
-This document records the release validation process used for Jinguzhou's
-developer preview.
+This document records the validation process for the developer preview.
 
 Run all commands from the repository root.
 
@@ -48,7 +47,7 @@ Expected final line:
 {"examples": 5, "status": "ok"}
 ```
 
-This verifies:
+The script covers:
 
 - harmful input blocking
 - nested extractor behavior

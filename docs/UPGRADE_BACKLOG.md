@@ -1,7 +1,7 @@
 # Upgrade Backlog
 
-This file captures the next meaningful improvements after the current gateway,
-policy, audit, tool-guard, and adapter-registry baseline.
+This file tracks work after the current gateway, policy, audit, tool-guard, and
+adapter-registry baseline.
 
 ## High Priority
 
@@ -39,5 +39,5 @@ policy, audit, tool-guard, and adapter-registry baseline.
 
 - End-to-end sample app with guarded tool execution
 - Cookbook for writing custom tool adapters
-- Better CLI output formatting for policy decisions
+- More readable CLI output for policy decisions
 - Example policy packs for sandboxed agents and enterprise bots

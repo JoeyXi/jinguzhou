@@ -1,5 +1,4 @@
 # Local Agent Tool Guard Example
 
-This example directory will demonstrate how to apply Jinguzhou tool policies to
-a local agent runtime.
-
+Placeholder for local agent tool-guard usage. Scope: tool-call evaluation before
+a local runtime executes an action.

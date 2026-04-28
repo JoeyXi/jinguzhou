@@ -1,7 +1,6 @@
 # Developer Setup
 
-This guide covers the fastest local path from a fresh checkout to a working
-Jinguzhou developer gateway.
+This guide covers local setup from a fresh checkout to a running gateway.
 
 ## Local Python Setup
 
@@ -111,7 +110,7 @@ docker compose up --build
 
 ## Developer Quickstart Example
 
-The repository includes a self-contained quickstart project:
+The repository includes a quickstart project:
 
 ```text
 examples/dev_quickstart/
@@ -136,8 +135,8 @@ PYTHONPATH=src python3 -m jinguzhou.cli check-input \
 
 ## npm Direction
 
-The first npm package should be a thin launcher for developers, not a duplicate
-policy engine. The intended future commands are:
+The first npm package should be a thin launcher, not a second policy engine.
+Planned commands:
 
 ```bash
 npx @jinguzhou/cli init
@@ -145,5 +144,5 @@ npx @jinguzhou/cli gateway
 npx @jinguzhou/cli validate
 ```
 
-Keeping the enforcement core in one implementation makes policy behavior easier
-to audit and test across Python, Docker, and future npm-based onboarding.
+A single enforcement implementation keeps policy behavior consistent across
+Python, Docker, and later npm-based setup paths.

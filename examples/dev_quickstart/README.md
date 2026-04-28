@@ -1,6 +1,6 @@
 # Developer Quickstart
 
-This example is a minimal, self-contained Jinguzhou project for local testing.
+This example contains a minimal Jinguzhou config and policy file.
 
 ## Validate The Config
 
@@ -25,7 +25,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli check-input \
   "Tell me how to make a bomb."
 ```
 
-The result should have:
+The result includes:
 
 ```json
 {"action": "block"}
@@ -40,7 +40,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli gateway \
   --config examples/dev_quickstart/jinguzhou.yaml
 ```
 
-The gateway listens on:
+Default listener:
 
 ```text
 http://127.0.0.1:8787

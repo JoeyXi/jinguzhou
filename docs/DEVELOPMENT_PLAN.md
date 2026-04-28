@@ -1,13 +1,12 @@
 # Jinguzhou Development Plan
 
-Jinguzhou is an open-source, model-agnostic safety gateway for LLM applications.
-Its first goal is to give developers a practical way to define, enforce, and
-audit human safety boundaries around model input, model output, tool calls, and
-real-world actions.
+Jinguzhou is a model-agnostic policy gateway for LLM applications. Its first
+goal is to give developers a practical way to define, enforce, and audit
+boundaries around model input, model output, tool calls, and external actions.
 
-The project should start as a small but serious system:
+The first version should keep a small core:
 
-- LLM safety proxy gateway
+- LLM policy proxy gateway
 - Policy and rule engine
 - Audit trail and replay foundation
 
@@ -16,18 +15,18 @@ prompting alone as the safety mechanism.
 
 ## Product Positioning
 
-Jinguzhou is the "tightening hoop" outside the model.
+Jinguzhou sits outside the model as an enforcement layer.
 
-The model can become more powerful, change vendors, run locally, or be composed
-inside agent frameworks. Jinguzhou remains an external enforcement layer that
-checks requests, responses, and actions against human-defined safety policies.
+Models, providers, and agent runtimes can change. Jinguzhou keeps policy checks
+outside those systems and evaluates requests, responses, and actions against
+operator-defined rules.
 
 ## Core Principles
 
 1. Model-agnostic by default
 2. External enforcement instead of model self-restraint
 3. Human-defined policy as the source of truth
-4. Default-deny for high-risk tool use and real-world actions
+4. Default-deny for high-risk tool use and external actions
 5. Every decision should be explainable and auditable
 6. Rules should be versioned, testable, and community-extensible
 7. The system should degrade safely when classifiers or providers fail
@@ -36,7 +35,7 @@ checks requests, responses, and actions against human-defined safety policies.
 
 The MVP should answer one question well:
 
-Can a developer put Jinguzhou in front of an LLM app and reliably control what
+Can a developer put Jinguzhou in front of an LLM app and control which
 requests, outputs, and tool actions are allowed?
 
 ### Included In MVP
@@ -70,10 +69,10 @@ These can come after the gateway, policy engine, and audit foundation are stable
 ## Target Users
 
 - Developers building LLM apps
-- AI agent framework users
+- Agent framework users
 - Open-source model deployers
-- Security engineers evaluating AI behavior
-- Teams that need auditability before letting AI use tools
+- Security engineers evaluating model behavior
+- Teams that need audit logs before enabling tool use
 
 ## System Architecture
 
@@ -89,7 +88,7 @@ Jinguzhou Gateway
     |
     |-- LLM Provider Adapter
     |     |-- OpenAI-compatible API
-    |     |-- Future: Anthropic, Gemini, Ollama, vLLM
+    |     |-- Later: Anthropic, Gemini, Ollama, vLLM
     |
     |-- Output Guard
     |     |-- Policy Engine
@@ -101,7 +100,7 @@ Jinguzhou Gateway
     |
     |-- Audit Logger
           |-- JSONL Events
-          |-- Future: SQLite/Postgres/exporters
+          |-- Later: SQLite/Postgres/exporters
 ```
 
 ## Main Components
@@ -162,7 +161,7 @@ Every decision should include:
 
 ### 3. Rule Format
 
-Rules should be readable, versionable, and easy to test.
+Rules should be readable, versioned, and testable.
 
 Example:
 
@@ -228,7 +227,7 @@ MVP detectors:
 - PII pattern detector
 - Tool danger detector
 
-Future detectors:
+Later detectors:
 
 - LLM-based policy classifier
 - Local small model classifier
@@ -238,10 +237,9 @@ Future detectors:
 
 ### 5. Tool Guard
 
-The tool guard controls actions, not just text.
+The tool guard controls actions in addition to text.
 
-This is one of the most important parts of Jinguzhou because real harm often
-happens when models can execute tools.
+Risk often moves from text to side effects when models can execute tools.
 
 MVP tool categories:
 
@@ -273,7 +271,7 @@ Initial behavior:
 - Audit event includes the requested action
 - Caller can decide whether to retry with an approval token
 
-Future behavior:
+Later behavior:
 
 - Web approval console
 - Slack/Discord/email approval
@@ -312,7 +310,7 @@ Privacy stance:
 - Full prompt logging should be explicitly configurable
 - Secrets should never be logged
 
-Future storage:
+Later storage:
 
 - SQLite
 - Postgres
@@ -393,9 +391,9 @@ Recommended MVP stack:
 
 Why Python first:
 
-- Fastest path for AI developers
-- Strong ecosystem for LLM integrations
-- Easy CLI and HTTP gateway implementation
+- Common runtime for LLM application code
+- Mature ecosystem for provider and agent integrations
+- Straightforward CLI and HTTP gateway implementation
 - Later SDKs can wrap the gateway from other languages
 
 ## CLI Design
@@ -527,7 +525,7 @@ Deliverables:
 
 Exit criteria:
 
-- A developer can add Jinguzhou to a sample app in under 10 minutes
+- A sample app can run with the documented config and rule files
 - Rule authors can add tests for new rules
 
 ## Rule Packs
@@ -539,7 +537,7 @@ Initial built-in packs:
 - `privacy`: PII, secrets, credentials, personal data leakage
 - `tool_use`: filesystem, shell, network, database, payment, email actions
 
-Future packs:
+Later packs:
 
 - `medical`
 - `legal`
@@ -600,7 +598,7 @@ priority.
 - Should semantic risk classification be local-only in MVP, provider-based, or postponed?
 - How strict should the default baseline rules be?
 - Should policy rules use a custom DSL later, or stay YAML-first?
-- What should count as a "real-world action" in v1?
+- What should count as an external action in v1?
 - How should approval tokens be signed and expired?
 
 ## First Implementation Order

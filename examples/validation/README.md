@@ -1,7 +1,6 @@
 # Validation Examples
 
-These examples exercise the first-preview release without calling a real LLM
-provider.
+These examples exercise the developer preview without calling a model provider.
 
 Run from the repository root:
 
@@ -9,7 +8,7 @@ Run from the repository root:
 PYTHONPATH=src python3 examples/validation/run_validation.py
 ```
 
-The script validates:
+The script covers:
 
 - harmful input policy blocking
 - nested JSONPath-like tool payload extraction

@@ -1,22 +1,21 @@
 <h1 align="center">Jinguzhou</h1>
 
 <p align="center">
-  <img src="golden_circlet.png" alt="Jinguzhou golden circlet promotional image" width="760">
+  <img src="golden_circlet.png" alt="Jinguzhou golden circlet" width="760">
 </p>
 
-Jinguzhou is an open-source safety gateway for LLM applications.
+Jinguzhou is a policy gateway for LLM applications.
 
-It is designed as an external control layer that helps developers define,
-enforce, approve, and audit human safety boundaries around:
+It runs outside the model and checks:
 
 - model input
 - model output
 - tool calls
-- real-world actions
+- external actions
 
-The first preview focuses on:
+Current scope:
 
-- an LLM safety proxy gateway
+- an LLM policy proxy gateway
 - a YAML policy engine
 - input, output, and tool-call enforcement
 - signed human approval tokens
@@ -25,7 +24,7 @@ The first preview focuses on:
 
 ## Status
 
-This repository is in developer-preview stage.
+This repository is a developer preview.
 
 The current codebase provides:
 
@@ -41,7 +40,7 @@ The current codebase provides:
 
 ## Quick Start
 
-Install for local development:
+Install locally:
 
 ```bash
 python -m venv .venv
@@ -51,7 +50,7 @@ jinguzhou version
 jinguzhou --help
 ```
 
-Create and validate a starter project:
+Create and validate a starter config:
 
 ```bash
 jinguzhou init --output jinguzhou.yaml
@@ -65,7 +64,7 @@ Run tests:
 pytest
 ```
 
-Gateway startup:
+Start the gateway:
 
 ```bash
 export OPENAI_API_KEY=your_api_key
@@ -80,9 +79,8 @@ Provider runtime options include:
 - `provider.timeout_seconds`
 - `provider.headers`
 
-You can also register custom tool adapters in config so the gateway knows which
-payload fields should be treated as paths, URLs, SQL, or command strings for
-different tool families.
+Custom tool adapters can be registered in config. Adapter mappings define which
+payload fields represent paths, URLs, SQL, command strings, and related facts.
 
 ## CLI Examples
 
@@ -167,12 +165,12 @@ PYTHONPATH=src python3 examples/validation/run_validation.py
 ```
 
 This checks policy blocking, nested tool payload extraction, gateway tool
-enforcement, approval-token retry, and audit query/replay without calling a real
+enforcement, approval-token retry, and audit query/replay without calling a
 model provider.
 
 ## Developer Quickstart Example
 
-Validate the self-contained quickstart project:
+Validate the quickstart project:
 
 ```bash
 PYTHONPATH=src python3 -m jinguzhou.cli validate-config \

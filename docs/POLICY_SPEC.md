@@ -4,10 +4,10 @@ This document defines the first public shape of Jinguzhou policy files.
 
 ## Goals
 
-- Human-readable
-- Easy to diff in Git
-- Easy to validate in code
-- Safe to extend later
+- readable by operators
+- diffable in Git
+- validated in code
+- extensible without changing the matcher core
 
 ## File Structure
 
@@ -65,18 +65,17 @@ MVP matcher keys:
 - `model_in`
 - `provider_in`
 
-## Richer Tool Matching
+## Tool Matching
 
-Tool-stage rules can now reason about several kinds of structured intent:
+Tool-stage rules support several structured facts:
 
 - file paths and path prefixes
 - inferred path sensitivity classes
 - network target domains
 - database operation types
 
-Those facts are now produced by a dedicated extractor layer. Matchers consume
-normalized tool facts; they no longer depend on hard-coded payload field names
-inside matcher logic.
+Those facts are produced by the extractor layer. Matchers consume normalized
+tool facts rather than hard-coded payload field names.
 
 ## Extractor Layer
 
@@ -90,8 +89,7 @@ extractor which payload fields correspond to:
 - database operation names
 - SQL strings
 
-This makes adapter-specific payload mapping configurable without changing the
-matcher core.
+Adapter-specific payload mapping stays outside the matcher core.
 
 In the gateway, those mappings can be supplied automatically by a tool adapter
 registry instead of being passed manually at every evaluation site.
@@ -112,7 +110,7 @@ context = EvaluationContext(
 ```
 
 The same rule can then match `path_starts_with` or `path_sensitivity_in`
-without caring that this tool uses `target` instead of `path`.
+without depending on whether the tool uses `target`, `path`, or another field.
 
 ### Path Matching
 

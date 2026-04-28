@@ -1,6 +1,6 @@
 # Audit Specification
 
-Jinguzhou audit records should make safety decisions explainable and reviewable.
+Jinguzhou audit records capture policy decisions for review and debugging.
 
 ## MVP Storage
 
@@ -63,4 +63,4 @@ PYTHONPATH=src python3 -m jinguzhou.cli audit replay .jinguzhou/audit.jsonl \
   --request-id req-123
 ```
 
-This is intended for first-pass incident review and policy debugging.
+Use replay for initial incident review and policy debugging.

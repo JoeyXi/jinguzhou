@@ -38,16 +38,16 @@
 
 ## 0.2.0 Developer Experience
 
-Goal: make Jinguzhou easy to install, initialize, validate, and run as a local
-developer gateway.
+Goal: reduce the steps required to install, initialize, validate, and run a
+local gateway.
 
 - Versioned `0.2.0` release with changelog notes
 - `jinguzhou init` starter config generation
 - `jinguzhou validate-config` runtime and policy validation
 - Dockerfile and documented container quick start
 - Docker Compose gateway quick start
-- self-contained developer quickstart example
-- clearer README onboarding path
+- developer quickstart example
+- clearer README setup path
 - developer setup guide
 - release validation updated for 0.2
 - tests for new developer-facing commands
