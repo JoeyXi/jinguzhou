@@ -47,7 +47,7 @@ def main() -> None:
     results.append("compileall")
 
     version = run([python, "-m", "jinguzhou.cli", "version"], env_prefix=env)
-    if version != "0.2.0":
+    if version != "0.2.1":
         raise AssertionError(f"Unexpected version: {version}")
     results.append("version")
 

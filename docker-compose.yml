@@ -2,7 +2,7 @@ services:
   gateway:
     build:
       context: .
-    image: jinguzhou:0.2.0
+    image: jinguzhou:0.2.1
     ports:
       - "8787:8787"
     environment:

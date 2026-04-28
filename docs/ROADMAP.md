@@ -45,18 +45,22 @@ local gateway.
 - `jinguzhou init` starter config generation
 - `jinguzhou validate-config` runtime and policy validation
 - Dockerfile and documented container quick start
-- Docker Compose gateway quick start
-- developer quickstart example
 - clearer README setup path
 - developer setup guide
 - release validation updated for 0.2
 - tests for new developer-facing commands
+
+## 0.2.1 Developer Infrastructure
+
+- Docker Compose gateway quick start
+- developer quickstart example
 - CLI text output for local checks and config validation
 - optional Postgres audit backend
 - npm launcher package scaffold
 - PyPI release workflow
 - starter Helm chart
 - local dashboard status page
+- admin API key guard for control-plane endpoints
 
 See [0.2 release plan](V0.2_RELEASE_PLAN.md).
 

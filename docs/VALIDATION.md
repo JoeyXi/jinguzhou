@@ -21,7 +21,7 @@ PYTHONPATH=src python3 -m pytest
 Expected result:
 
 ```text
-55 passed
+56 passed
 ```
 
 Coverage includes:
@@ -77,7 +77,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli version
 Expected:
 
 ```text
-0.2.0
+0.2.1
 ```
 
 ```bash

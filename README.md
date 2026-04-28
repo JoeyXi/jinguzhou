@@ -136,7 +136,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli audit query .jinguzhou/audit.jsonl \
 Build the local image:
 
 ```bash
-docker build -t jinguzhou:0.2.0 .
+docker build -t jinguzhou:0.2.1 .
 ```
 
 Run the gateway:
@@ -145,7 +145,7 @@ Run the gateway:
 docker run --rm -p 8787:8787 \
   -e OPENAI_API_KEY="$OPENAI_API_KEY" \
   -e JINGUZHOU_APPROVAL_SECRET=change_me \
-  jinguzhou:0.2.0
+  jinguzhou:0.2.1
 ```
 
 Or use Docker Compose:
