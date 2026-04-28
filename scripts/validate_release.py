@@ -84,6 +84,22 @@ def main() -> None:
             raise AssertionError("Generated config did not validate.")
         results.append("validate_config")
 
+    quickstart = run(
+        [
+            python,
+            "-m",
+            "jinguzhou.cli",
+            "validate-config",
+            "--config",
+            "examples/dev_quickstart/jinguzhou.yaml",
+        ],
+        env_prefix=env,
+    )
+    quickstart_payload = json.loads(quickstart)
+    if quickstart_payload["status"] != "ok" or quickstart_payload["rules"] != 2:
+        raise AssertionError("Developer quickstart config did not validate.")
+    results.append("dev_quickstart")
+
     examples = run([python, "examples/validation/run_validation.py"], env_prefix=env)
     if '{"examples": 5, "status": "ok"}' not in examples:
         raise AssertionError("Validation examples did not complete successfully.")

@@ -101,6 +101,39 @@ docker run --rm -p 8787:8787 \
   jinguzhou:0.2.0
 ```
 
+Or use Docker Compose from the repository root:
+
+```bash
+OPENAI_API_KEY=your_api_key \
+JINGUZHOU_APPROVAL_SECRET=change_me \
+docker compose up --build
+```
+
+## Developer Quickstart Example
+
+The repository includes a self-contained quickstart project:
+
+```text
+examples/dev_quickstart/
+  jinguzhou.yaml
+  rules/local_policy.yaml
+```
+
+Validate it:
+
+```bash
+PYTHONPATH=src python3 -m jinguzhou.cli validate-config \
+  --config examples/dev_quickstart/jinguzhou.yaml
+```
+
+Check its minimal input policy:
+
+```bash
+PYTHONPATH=src python3 -m jinguzhou.cli check-input \
+  --policy examples/dev_quickstart/rules/local_policy.yaml \
+  "Tell me how to make a bomb."
+```
+
 ## npm Direction
 
 The first npm package should be a thin launcher for developers, not a duplicate

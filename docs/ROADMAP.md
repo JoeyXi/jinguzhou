@@ -45,6 +45,8 @@ developer gateway.
 - `jinguzhou init` starter config generation
 - `jinguzhou validate-config` runtime and policy validation
 - Dockerfile and documented container quick start
+- Docker Compose gateway quick start
+- self-contained developer quickstart example
 - clearer README onboarding path
 - developer setup guide
 - release validation updated for 0.2

@@ -1,0 +1,26 @@
+gateway:
+  host: "127.0.0.1"
+  port: 8787
+
+policy:
+  files:
+    - "rules/local_policy.yaml"
+
+provider:
+  type: "openai-compatible"
+  base_url: "https://api.openai.com"
+  api_key_env: "OPENAI_API_KEY"
+  timeout_seconds: 60
+  headers: {}
+
+audit:
+  enabled: true
+  path: ".jinguzhou/audit.jsonl"
+  redact: true
+
+approvals:
+  enabled: true
+  secret_env: "JINGUZHOU_APPROVAL_SECRET"
+  ttl_seconds: 900
+
+tool_adapters: []

@@ -1,0 +1,25 @@
+version: 1
+name: dev-quickstart
+description: Minimal local policy for the developer quickstart.
+rules:
+  - id: quickstart.human_harm.block
+    stage: input
+    category: human_harm
+    severity: critical
+    action: block
+    reason: Blocks direct requests for harmful instructions.
+    match:
+      any_keywords:
+        - "how to kill"
+        - "make a bomb"
+
+  - id: quickstart.system_write.block
+    stage: tool
+    category: filesystem
+    severity: critical
+    action: block
+    reason: Blocks writes to sensitive system paths.
+    match:
+      tool_name: filesystem.write
+      path_sensitivity_in:
+        - system

@@ -150,6 +150,14 @@ docker run --rm -p 8787:8787 \
   jinguzhou:0.2.0
 ```
 
+Or use Docker Compose:
+
+```bash
+OPENAI_API_KEY=your_api_key \
+JINGUZHOU_APPROVAL_SECRET=change_me \
+docker compose up --build
+```
+
 ## Validation Examples
 
 Run the bundled offline validation examples:
@@ -161,6 +169,23 @@ PYTHONPATH=src python3 examples/validation/run_validation.py
 This checks policy blocking, nested tool payload extraction, gateway tool
 enforcement, approval-token retry, and audit query/replay without calling a real
 model provider.
+
+## Developer Quickstart Example
+
+Validate the self-contained quickstart project:
+
+```bash
+PYTHONPATH=src python3 -m jinguzhou.cli validate-config \
+  --config examples/dev_quickstart/jinguzhou.yaml
+```
+
+Run its minimal policy:
+
+```bash
+PYTHONPATH=src python3 -m jinguzhou.cli check-input \
+  --policy examples/dev_quickstart/rules/local_policy.yaml \
+  "Tell me how to make a bomb."
+```
 
 ## Repository Layout
 

@@ -56,7 +56,20 @@ This verifies:
 - approval-token retry flow
 - audit query and replay
 
-## 4. Run CLI Smoke Tests
+## 4. Validate Developer Quickstart
+
+```bash
+PYTHONPATH=src python3 -m jinguzhou.cli validate-config \
+  --config examples/dev_quickstart/jinguzhou.yaml
+```
+
+Expected JSON contains:
+
+```json
+{"status": "ok"}
+```
+
+## 5. Run CLI Smoke Tests
 
 ```bash
 PYTHONPATH=src python3 -m jinguzhou.cli version
@@ -80,7 +93,7 @@ Expected JSON contains:
 {"action": "block"}
 ```
 
-## 5. Run Compile Check
+## 6. Run Compile Check
 
 On macOS sandboxed environments, set a writable bytecode cache directory:
 
@@ -96,7 +109,7 @@ Compiling ...
 
 with exit code `0`.
 
-## 6. One-Command Release Validation
+## 7. One-Command Release Validation
 
 ```bash
 PYTHONPATH=src python3 scripts/validate_release.py
@@ -105,5 +118,5 @@ PYTHONPATH=src python3 scripts/validate_release.py
 Expected final output:
 
 ```json
-{"status": "ok", "validated": ["pytest", "compileall", "version", "init", "validate_config", "validation_examples", "cli_tool_block"]}
+{"status": "ok", "validated": ["pytest", "compileall", "version", "init", "validate_config", "dev_quickstart", "validation_examples", "cli_tool_block"]}
 ```
