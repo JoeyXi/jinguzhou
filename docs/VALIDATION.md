@@ -1,7 +1,7 @@
 # Validation Guide
 
-This document records the release validation process used for Jinguzhou's first
-preview.
+This document records the release validation process used for Jinguzhou's
+developer preview.
 
 Run all commands from the repository root.
 
@@ -22,7 +22,7 @@ PYTHONPATH=src python3 -m pytest
 Expected result:
 
 ```text
-43 passed
+47 passed
 ```
 
 Coverage includes:
@@ -65,7 +65,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli version
 Expected:
 
 ```text
-0.1.0
+0.2.0
 ```
 
 ```bash
@@ -105,5 +105,5 @@ PYTHONPATH=src python3 scripts/validate_release.py
 Expected final output:
 
 ```json
-{"status": "ok", "validated": ["pytest", "compileall", "version", "validation_examples", "cli_tool_block"]}
+{"status": "ok", "validated": ["pytest", "compileall", "version", "init", "validate_config", "validation_examples", "cli_tool_block"]}
 ```

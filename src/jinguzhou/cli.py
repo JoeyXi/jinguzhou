@@ -13,6 +13,7 @@ from jinguzhou.approvals.tokens import ApprovalTokenManager
 from jinguzhou.audit.query import query_audit_events, replay_audit_events
 from jinguzhou.config import load_runtime_config
 from jinguzhou.gateway.runtime import build_app_from_config
+from jinguzhou.init_project import write_starter_project
 from jinguzhou.policy.engine import PolicyEngine
 from jinguzhou.policy.loader import load_policy_files
 from jinguzhou.policy.models import EvaluationContext
@@ -27,6 +28,84 @@ app.add_typer(approval_app, name="approval")
 def _load_engine(policy_paths: list[Path]) -> PolicyEngine:
     policy = load_policy_files(policy_paths)
     return PolicyEngine(policy=policy)
+
+
+@app.command("init")
+def init_project(
+    output: Path = typer.Option(
+        Path("jinguzhou.yaml"),
+        "--output",
+        "-o",
+        help="Path for the starter runtime config.",
+    ),
+    rules: bool = typer.Option(
+        True,
+        "--rules/--no-rules",
+        help="Create starter rule pack files next to the config.",
+    ),
+    force: bool = typer.Option(False, "--force", help="Overwrite existing starter files."),
+) -> None:
+    """Create a starter Jinguzhou project config and local rule packs."""
+    try:
+        result = write_starter_project(output, include_rules=rules, force=force)
+    except FileExistsError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+
+    typer.echo(
+        json.dumps(
+            {
+                "status": "ok",
+                "config": str(result.config_path),
+                "rules": [str(path) for path in result.rule_paths],
+            },
+            sort_keys=True,
+        )
+    )
+
+
+@app.command("validate-config")
+def validate_config(
+    config: Path = typer.Option(..., help="Path to a Jinguzhou runtime config YAML file."),
+) -> None:
+    """Validate runtime config, policy files, and gateway wiring."""
+    try:
+        runtime_config = load_runtime_config(config)
+        policy_paths = [config.resolve().parent / path for path in runtime_config.policy.files]
+        policy = load_policy_files(policy_paths)
+        app_instance = build_app_from_config(runtime_config, config.resolve().parent)
+    except Exception as exc:
+        typer.echo(
+            json.dumps(
+                {
+                    "status": "error",
+                    "config": str(config),
+                    "error": str(exc),
+                },
+                sort_keys=True,
+            ),
+            err=True,
+        )
+        raise typer.Exit(1) from exc
+
+    typer.echo(
+        json.dumps(
+            {
+                "status": "ok",
+                "config": str(config),
+                "policy_name": policy.name,
+                "policy_files": len(policy_paths),
+                "rules": len(policy.rules),
+                "gateway": {
+                    "host": runtime_config.gateway.host,
+                    "port": runtime_config.gateway.port,
+                },
+                "provider_type": runtime_config.provider.type,
+                "audit_enabled": app_instance.state.audit_logger is not None,
+                "approval_enabled": app_instance.state.approval_manager is not None,
+            },
+            sort_keys=True,
+        )
+    )
 
 
 @app.command("check-input")

@@ -25,7 +25,7 @@ The first preview focuses on:
 
 ## Status
 
-This repository is in first-preview stage.
+This repository is in developer-preview stage.
 
 The current codebase provides:
 
@@ -41,12 +41,28 @@ The current codebase provides:
 
 ## Quick Start
 
+Install for local development:
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest
+jinguzhou version
 jinguzhou --help
+```
+
+Create and validate a starter project:
+
+```bash
+jinguzhou init --output jinguzhou.yaml
+jinguzhou validate-config --config jinguzhou.yaml
+python3 scripts/validate_release.py
+```
+
+Run tests:
+
+```bash
+pytest
 ```
 
 Gateway startup:
@@ -54,7 +70,7 @@ Gateway startup:
 ```bash
 export OPENAI_API_KEY=your_api_key
 export JINGUZHOU_APPROVAL_SECRET=change_me
-PYTHONPATH=src python3 -m jinguzhou.cli gateway --config jinguzhou.example.yaml
+jinguzhou gateway --config jinguzhou.yaml
 ```
 
 Provider runtime options include:
@@ -69,6 +85,18 @@ payload fields should be treated as paths, URLs, SQL, or command strings for
 different tool families.
 
 ## CLI Examples
+
+Initialize a local project:
+
+```bash
+jinguzhou init --output jinguzhou.yaml
+```
+
+Validate a runtime config:
+
+```bash
+jinguzhou validate-config --config jinguzhou.yaml
+```
 
 Check input:
 
@@ -105,6 +133,23 @@ PYTHONPATH=src python3 -m jinguzhou.cli audit query .jinguzhou/audit.jsonl \
   --decision require_human_review
 ```
 
+## Docker
+
+Build the local image:
+
+```bash
+docker build -t jinguzhou:0.2.0 .
+```
+
+Run the gateway:
+
+```bash
+docker run --rm -p 8787:8787 \
+  -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+  -e JINGUZHOU_APPROVAL_SECRET=change_me \
+  jinguzhou:0.2.0
+```
+
 ## Validation Examples
 
 Run the bundled offline validation examples:
@@ -133,6 +178,8 @@ Key docs:
 - [Audit spec](docs/AUDIT_SPEC.md)
 - [Approval flow](docs/APPROVALS.md)
 - [Validation guide](docs/VALIDATION.md)
+- [Developer setup](docs/DEVELOPER_SETUP.md)
+- [0.2 release plan](docs/V0.2_RELEASE_PLAN.md)
 - [Upgrade backlog](docs/UPGRADE_BACKLOG.md)
 
 ## Release Readiness

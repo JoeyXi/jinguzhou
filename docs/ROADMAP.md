@@ -36,7 +36,7 @@
 - Nested field extraction
 - Human approval tokens
 
-## Planned For 0.2.0 Developer Experience
+## 0.2.0 Developer Experience
 
 Goal: make Jinguzhou easy to install, initialize, validate, and run as a local
 developer gateway.

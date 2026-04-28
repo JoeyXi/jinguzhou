@@ -14,7 +14,55 @@ def test_version_command() -> None:
     result = runner.invoke(app, ["version"])
 
     assert result.exit_code == 0
-    assert "0.1.0" in result.stdout
+    assert "0.2.0" in result.stdout
+
+
+def test_init_command_creates_config_and_rules(tmp_path: Path) -> None:
+    config_path = tmp_path / "jinguzhou.yaml"
+
+    result = runner.invoke(app, ["init", "--output", str(config_path)])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "ok"
+    assert config_path.exists()
+    assert (tmp_path / "rules" / "baseline.yaml").exists()
+    assert (tmp_path / "rules" / "tool_use.yaml").exists()
+    assert len(payload["rules"]) == 4
+
+
+def test_init_command_refuses_to_overwrite_without_force(tmp_path: Path) -> None:
+    config_path = tmp_path / "jinguzhou.yaml"
+    first = runner.invoke(app, ["init", "--output", str(config_path)])
+    second = runner.invoke(app, ["init", "--output", str(config_path)])
+
+    assert first.exit_code == 0
+    assert second.exit_code != 0
+    assert "already exists" in second.stdout
+
+
+def test_validate_config_command_accepts_generated_project(tmp_path: Path) -> None:
+    config_path = tmp_path / "jinguzhou.yaml"
+    runner.invoke(app, ["init", "--output", str(config_path)])
+
+    result = runner.invoke(app, ["validate-config", "--config", str(config_path)])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "ok"
+    assert payload["policy_files"] == 4
+    assert payload["rules"] >= 1
+    assert payload["provider_type"] == "openai-compatible"
+
+
+def test_validate_config_command_reports_invalid_config(tmp_path: Path) -> None:
+    config_path = tmp_path / "missing.yaml"
+
+    result = runner.invoke(app, ["validate-config", "--config", str(config_path)])
+
+    assert result.exit_code == 1
+    payload = json.loads(result.output)
+    assert payload["status"] == "error"
 
 
 def test_check_input_accepts_multiple_policy_files() -> None:

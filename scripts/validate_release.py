@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -46,9 +47,42 @@ def main() -> None:
     results.append("compileall")
 
     version = run([python, "-m", "jinguzhou.cli", "version"], env_prefix=env)
-    if version != "0.1.0":
+    if version != "0.2.0":
         raise AssertionError(f"Unexpected version: {version}")
     results.append("version")
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        config_path = Path(tmp_dir) / "jinguzhou.yaml"
+        init_output = run(
+            [
+                python,
+                "-m",
+                "jinguzhou.cli",
+                "init",
+                "--output",
+                str(config_path),
+            ],
+            env_prefix=env,
+        )
+        if json.loads(init_output)["status"] != "ok":
+            raise AssertionError("Project initialization failed.")
+        results.append("init")
+
+        validation = run(
+            [
+                python,
+                "-m",
+                "jinguzhou.cli",
+                "validate-config",
+                "--config",
+                str(config_path),
+            ],
+            env_prefix=env,
+        )
+        validation_payload = json.loads(validation)
+        if validation_payload["status"] != "ok" or validation_payload["rules"] < 1:
+            raise AssertionError("Generated config did not validate.")
+        results.append("validate_config")
 
     examples = run([python, "examples/validation/run_validation.py"], env_prefix=env)
     if '{"examples": 5, "status": "ok"}' not in examples:

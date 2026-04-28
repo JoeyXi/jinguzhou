@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="jinguzhou",
-    version="0.1.0",
+    version="0.2.0",
     description="A model-agnostic safety gateway, policy engine, and audit layer for LLM applications.",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
@@ -27,4 +27,3 @@ setup(
         ]
     },
 )
-
