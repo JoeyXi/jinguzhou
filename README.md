@@ -265,8 +265,15 @@ tests/             Unit tests
 examples/          Integration examples
 ```
 
+Example entry points:
+
+- `examples/openai-compatible-proxy/`
+- `examples/agent-tool-security/`
+- `examples/dev_quickstart/`
+
 Key docs:
 
+- [Documentation index](docs/INDEX.md)
 - [Policy spec](docs/POLICY_SPEC.md)
 - [Audit spec](docs/AUDIT_SPEC.md)
 - [Approval flow](docs/APPROVALS.md)

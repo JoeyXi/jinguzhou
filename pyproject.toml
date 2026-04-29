@@ -5,14 +5,28 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jinguzhou"
 version = "0.2.1"
-description = "A model-agnostic safety gateway, policy engine, and audit layer for LLM applications."
+description = "OpenAI-compatible LLM gateway and policy engine for AI agents, tool calling, audit logs, human approval, and MCP or LangChain integrations."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
   { name = "Jinguzhou Contributors" }
 ]
-keywords = ["llm", "ai-safety", "gateway", "policy-engine", "audit"]
+keywords = [
+  "llm",
+  "llm-gateway",
+  "ai-agents",
+  "agent-safety",
+  "tool-calling",
+  "policy-engine",
+  "guardrails",
+  "audit-log",
+  "openai-compatible",
+  "mcp",
+  "langchain",
+  "proxy",
+  "fastapi",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
