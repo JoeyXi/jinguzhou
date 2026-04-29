@@ -4,16 +4,25 @@
   <img src="golden_circlet.png" alt="Jinguzhou golden circlet" width="760">
 </p>
 
-Jinguzhou is a policy gateway for LLM applications.
+Jinguzhou is an OpenAI-compatible LLM gateway and policy engine for AI agents,
+tool calling, and audit logging.
 
-It runs outside the model and checks:
+It runs outside the model and enforces checks on:
 
 - model input
 - model output
 - tool calls
 - external actions
 
-Current scope:
+It is intended for teams that need:
+
+- an LLM gateway in front of OpenAI-compatible clients
+- policy enforcement for agent tool calls
+- audit logs and replay for model and tool decisions
+- human approval for sensitive actions
+- adapter-based integrations for OpenAI tools, MCP, LangChain, and custom runtimes
+
+Current features:
 
 - an LLM policy proxy gateway
 - a YAML policy engine
@@ -261,6 +270,10 @@ Key docs:
 - [Policy spec](docs/POLICY_SPEC.md)
 - [Audit spec](docs/AUDIT_SPEC.md)
 - [Approval flow](docs/APPROVALS.md)
+- [OpenAI-compatible proxy guide](docs/OPENAI_COMPATIBLE_PROXY.md)
+- [Agent tool security guide](docs/AGENT_TOOL_SECURITY.md)
+- [MCP tool security guide](docs/MCP_TOOL_SECURITY.md)
+- [Postgres audit backend guide](docs/POSTGRES_AUDIT_BACKEND.md)
 - [Validation guide](docs/VALIDATION.md)
 - [Developer setup](docs/DEVELOPER_SETUP.md)
 - [0.2 release plan](docs/V0.2_RELEASE_PLAN.md)
