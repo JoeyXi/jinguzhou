@@ -4,6 +4,26 @@
   <img src="golden_circlet.png" alt="Jinguzhou golden circlet" width="760">
 </p>
 
+> **Name origin**
+>
+> **紧箍咒** [`jǐn gū zhòu`] means **Band-tightening Spell**.
+>
+> In *Journey to the West*, the golden ring placed on Sun Wukong's head by Guanyin
+> is more precisely called **紧箍儿** or **金箍儿**. “紧箍咒” refers to the spell used to
+> control that ring, though the two are often conflated in everyday usage.
+>
+> - Chinese name: **紧箍儿** (or **金箍儿**)
+> - Common English renderings: **The Tightening Hoop**, **The Golden Hoop**
+> - In Anthony C. Yu's translation of *Journey to the West*: **the Fillet**
+> - A more explanatory rendering: **the Headband with the Tightening Spell**
+>
+> **中文说明**
+>
+> “紧箍咒”通常译为 **Band-tightening Spell**。在《西游记》中，观音戴在孙悟空头上的金环本体更严格地说叫
+> **紧箍儿** 或 **金箍儿**；“紧箍咒”则是用来控制它的咒语，只是日常表达里二者常被混称。常见英文译法包括
+> **The Tightening Hoop**、**The Golden Hoop**，余国藩英译本中的 **the Fillet**，以及更偏意译的
+> **the Headband with the Tightening Spell**。
+
 Jinguzhou is an OpenAI-compatible LLM gateway and policy engine for AI agents,
 tool calling, and audit logging.
 

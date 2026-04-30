@@ -3,7 +3,7 @@
 Suggested repository description:
 
 ```text
-OpenAI-compatible LLM gateway and policy engine for AI agents, tool calling, audit logs, human approval, and MCP or LangChain integrations.
+Jinguzhou: OpenAI-compatible LLM gateway and policy engine for AI agents, tool calling, audit logs, human approval, and MCP or LangChain integrations.
 ```
 
 Suggested topics:
