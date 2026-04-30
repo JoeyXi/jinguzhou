@@ -49,11 +49,14 @@ Current features:
 - input, output, and tool-call enforcement
 - signed human approval tokens
 - JSONL audit logs with query and replay CLI
-- tool adapter registry for OpenAI, MCP/content-block, LangChain, and custom tools
+- adapter foundation for OpenAI, MCP, LangChain, LlamaIndex-style, OpenAI Agents-style, and custom tools
+- JSONPath-like nested extractor support for tool payloads
+- first-pass file, network, and database policy packs
 
 ## Status
 
-This repository is a developer preview.
+This repository is a developer preview. The current package version is
+`0.3.0-alpha`.
 
 The current codebase provides:
 
@@ -61,6 +64,8 @@ The current codebase provides:
 - policy schema, YAML loader, and deterministic matcher engine
 - nested JSONPath-like tool payload extraction
 - configurable tool adapter registry
+- normalized agent tool-call adapter API
+- file, network, and database tool policy packs
 - signed approval token flow for `require_human_review`
 - audit event model, JSONL logger, query, and replay helpers
 - configurable gateway runtime wiring
@@ -141,6 +146,14 @@ PYTHONPATH=src python3 -m jinguzhou.cli check-tool filesystem.write \
   --payload '{"path":"/etc/hosts","content":"demo"}'
 ```
 
+Check a v0.3 policy pack:
+
+```bash
+PYTHONPATH=src python3 -m jinguzhou.cli check-tool network.request \
+  --policy rules/tool_network_access.yaml \
+  --payload '{"url":"http://169.254.169.254/latest/meta-data"}'
+```
+
 Issue an approval token:
 
 ```bash
@@ -165,7 +178,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli audit query .jinguzhou/audit.jsonl \
 Build the local image:
 
 ```bash
-docker build -t jinguzhou:0.2.1 .
+docker build -t jinguzhou:0.3.0-alpha .
 ```
 
 Run the gateway:
@@ -174,7 +187,7 @@ Run the gateway:
 docker run --rm -p 8787:8787 \
   -e OPENAI_API_KEY="$OPENAI_API_KEY" \
   -e JINGUZHOU_APPROVAL_SECRET=change_me \
-  jinguzhou:0.2.1
+  jinguzhou:0.3.0-alpha
 ```
 
 Or use Docker Compose:

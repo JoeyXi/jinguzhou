@@ -24,6 +24,7 @@ class MatchConfig(BaseModel):
     path_sensitivity_in: list[str] = Field(default_factory=list)
     domain_in: list[str] = Field(default_factory=list)
     domain_suffix_in: list[str] = Field(default_factory=list)
+    domain_regex: list[str] = Field(default_factory=list)
     db_operation_in: list[str] = Field(default_factory=list)
     metadata_equals: dict[str, str] = Field(default_factory=dict)
     model_in: list[str] = Field(default_factory=list)

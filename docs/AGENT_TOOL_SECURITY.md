@@ -43,9 +43,22 @@ Tool rules can match:
 Current adapter coverage includes:
 
 - OpenAI tool calls
-- MCP-style content blocks
+- MCP-style content blocks and MCP JSON-RPC `tools/call`
 - LangChain tool payloads
+- LlamaIndex-style top-level tool call payloads
+- OpenAI Agents-style `function_call` output items
 - custom tool adapters declared in config
+
+## v0.3 Policy Packs
+
+The alpha rule packs split agent tool controls by risk area:
+
+- `rules/tool_file_access.yaml`
+- `rules/tool_network_access.yaml`
+- `rules/tool_database_access.yaml`
+
+These packs evaluate normalized facts from the extractor layer, including file
+paths, path sensitivity, target domains, SQL text, and database operation types.
 
 ## Related Docs
 

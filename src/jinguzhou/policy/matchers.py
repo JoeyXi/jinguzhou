@@ -69,7 +69,7 @@ def matches(context: EvaluationContext, match: MatchConfig) -> bool:
             if not any(sensitivity in expected for sensitivity in sensitivities):
                 return False
 
-    if match.domain_in or match.domain_suffix_in:
+    if match.domain_in or match.domain_suffix_in or match.domain_regex:
         domains = tool_facts.domains if tool_facts is not None else []
         if match.domain_in:
             allowed = {value.lower() for value in match.domain_in}
@@ -78,6 +78,13 @@ def matches(context: EvaluationContext, match: MatchConfig) -> bool:
         if match.domain_suffix_in:
             suffixes = tuple(value.lower() for value in match.domain_suffix_in)
             if not any(domain.endswith(suffixes) for domain in domains):
+                return False
+        if match.domain_regex:
+            if not any(
+                re.search(pattern, domain, re.IGNORECASE)
+                for pattern in match.domain_regex
+                for domain in domains
+            ):
                 return False
 
     if match.db_operation_in:

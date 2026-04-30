@@ -12,6 +12,7 @@ This index groups the main docs by common search terms and setup tasks.
 
 - [Agent tool security](AGENT_TOOL_SECURITY.md)
 - [MCP tool security](MCP_TOOL_SECURITY.md)
+- [v0.3 alpha plan](V0.3_ALPHA_PLAN.md)
 - [Policy spec](POLICY_SPEC.md)
 - [Approval flow](APPROVALS.md)
 
@@ -26,4 +27,5 @@ This index groups the main docs by common search terms and setup tasks.
 - [Release plan](V0.2_RELEASE_PLAN.md)
 - [Upgrade backlog](UPGRADE_BACKLOG.md)
 - [Release notes v0.2.1](RELEASE_NOTES_v0.2.1.md)
+- [Release notes v0.3.0-alpha](RELEASE_NOTES_v0.3.0-alpha.md)
 - [GitHub metadata](GITHUB_METADATA.md)

@@ -21,7 +21,7 @@ PYTHONPATH=src python3 -m pytest
 Expected result:
 
 ```text
-56 passed
+64 passed
 ```
 
 Coverage includes:
@@ -31,8 +31,9 @@ Coverage includes:
 - OpenAI-compatible gateway behavior
 - approval token issue/decode/verification
 - audit query and replay
-- tool adapter registry for OpenAI, MCP/content-block, and LangChain shapes
-- nested JSONPath-like extractor mapping
+- adapter foundation for OpenAI, MCP, LangChain, LlamaIndex-style, and OpenAI Agents-style shapes
+- nested JSONPath-like extractor mapping with bracket, wildcard, index, and recursive key support
+- file, network, and database policy packs
 - runnable validation examples
 
 ## 3. Run Offline Validation Examples
@@ -77,7 +78,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli version
 Expected:
 
 ```text
-0.2.1
+0.3.0-alpha
 ```
 
 ```bash
@@ -90,6 +91,14 @@ Expected JSON contains:
 
 ```json
 {"action": "block"}
+```
+
+v0.3 policy pack smoke test:
+
+```bash
+PYTHONPATH=src python3 -m jinguzhou.cli check-tool network.request \
+  --policy rules/tool_network_access.yaml \
+  --payload '{"url":"http://169.254.169.254/latest/meta-data"}'
 ```
 
 Text output:

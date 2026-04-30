@@ -1,0 +1,45 @@
+version: 1
+name: tool-database-access
+description: First-pass database operation policy pack for agent tool calls.
+rules:
+  - id: tool.database.destructive_operation.block
+    stage: tool
+    category: database
+    severity: critical
+    action: block
+    reason: Destructive database operations are blocked.
+    match:
+      tool_name: database.query
+      db_operation_in:
+        - drop
+        - truncate
+        - alter
+
+  - id: tool.database.mutation.review
+    stage: tool
+    category: database
+    severity: high
+    action: require_human_review
+    reason: Database mutations require review.
+    match:
+      tool_name: database.query
+      db_operation_in:
+        - insert
+        - update
+        - delete
+        - create
+        - grant
+        - revoke
+
+  - id: tool.database.bulk_export.review
+    stage: tool
+    category: database
+    severity: high
+    action: require_human_review
+    reason: Bulk database exports require review.
+    match:
+      tool_name: database.query
+      regex:
+        - "\\bcopy\\b.+\\bto\\b"
+        - "\\binto\\s+outfile\\b"
+        - "\\bdump\\b"

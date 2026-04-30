@@ -47,7 +47,7 @@ def main() -> None:
     results.append("compileall")
 
     version = run([python, "-m", "jinguzhou.cli", "version"], env_prefix=env)
-    if version != "0.2.1":
+    if version != "0.3.0-alpha":
         raise AssertionError(f"Unexpected version: {version}")
     results.append("version")
 
@@ -140,6 +140,33 @@ def main() -> None:
     if json.loads(blocked)["action"] != "block":
         raise AssertionError("filesystem.write /etc/hosts should be blocked.")
     results.append("cli_tool_block")
+
+    policy_pack_files = [
+        "rules/tool_file_access.yaml",
+        "rules/tool_network_access.yaml",
+        "rules/tool_database_access.yaml",
+    ]
+    for policy_pack in policy_pack_files:
+        if not (ROOT / policy_pack).exists():
+            raise AssertionError(f"Missing v0.3 policy pack: {policy_pack}")
+
+    network_blocked = run(
+        [
+            python,
+            "-m",
+            "jinguzhou.cli",
+            "check-tool",
+            "network.request",
+            "--policy",
+            "rules/tool_network_access.yaml",
+            "--payload",
+            '{"url":"http://169.254.169.254/latest/meta-data"}',
+        ],
+        env_prefix=env,
+    )
+    if json.loads(network_blocked)["action"] != "block":
+        raise AssertionError("metadata endpoint network request should be blocked.")
+    results.append("v0_3_policy_packs")
 
     npm_package = json.loads((ROOT / "packages/npm-cli/package.json").read_text(encoding="utf-8"))
     if npm_package["name"] != "@jinguzhou/cli" or "jinguzhou" not in npm_package["bin"]:

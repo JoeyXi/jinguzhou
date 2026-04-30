@@ -1,0 +1,59 @@
+version: 1
+name: tool-network-access
+description: First-pass network target policy pack for agent tool calls.
+rules:
+  - id: tool.network.metadata_endpoint.block
+    stage: tool
+    category: network
+    severity: critical
+    action: block
+    reason: Cloud metadata service endpoints are blocked.
+    match:
+      tool_name: network.request
+      domain_in:
+        - 169.254.169.254
+        - metadata.google.internal
+
+  - id: tool.network.private_target.block
+    stage: tool
+    category: network
+    severity: critical
+    action: block
+    reason: Requests to private or loopback network targets are blocked.
+    match:
+      tool_name: network.request
+      domain_regex:
+        - "^localhost$"
+        - "^127\\."
+        - "^10\\."
+        - "^192\\.168\\."
+        - "^172\\.(1[6-9]|2[0-9]|3[0-1])\\."
+
+  - id: tool.network.public_tunnel.review
+    stage: tool
+    category: network
+    severity: high
+    action: require_human_review
+    reason: Public tunnel domains require review.
+    match:
+      tool_name: network.request
+      domain_suffix_in:
+        - ngrok.io
+        - ngrok-free.app
+        - trycloudflare.com
+        - localhost.run
+        - serveo.net
+
+  - id: tool.network.paste_or_raw_host.review
+    stage: tool
+    category: network
+    severity: high
+    action: require_human_review
+    reason: Paste and raw-content hosts can be used for data exfiltration.
+    match:
+      tool_name: network.request
+      domain_suffix_in:
+        - pastebin.com
+        - hastebin.com
+        - gist.githubusercontent.com
+        - raw.githubusercontent.com

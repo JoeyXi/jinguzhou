@@ -24,11 +24,11 @@ Suggested topics:
 Suggested release title pattern:
 
 ```text
-Jinguzhou 0.2.1: LLM Gateway, Agent Tool Security, Audit Backend, Helm, npm Launcher
+Jinguzhou 0.3.0-alpha: Agent Tool Firewall, JSONPath Extractors, File Network Database Policy Packs
 ```
 
 Suggested release summary:
 
 ```text
-Jinguzhou 0.2.1 adds Docker Compose startup, a developer quickstart, text-mode CLI output, an optional Postgres audit backend, a starter Helm chart, an npm launcher, and local control-plane endpoints for dashboard and approval integrations.
+Jinguzhou 0.3.0-alpha adds the agent adapter foundation, expanded JSONPath-like extractor support, and first-pass file, network, and database policy packs for agent tool security.
 ```

@@ -7,6 +7,10 @@ policy:
     - "rules/baseline.yaml"
     - "rules/prompt_injection.yaml"
     - "rules/privacy.yaml"
+    - "rules/tool_use.yaml"
+    - "rules/tool_file_access.yaml"
+    - "rules/tool_network_access.yaml"
+    - "rules/tool_database_access.yaml"
 
 provider:
   type: "openai-compatible"
@@ -38,4 +42,4 @@ tool_adapters:
     canonical_tool_name: "network.request"
     priority: 200
     extraction:
-      url_fields: ["dest", "target_url"]
+      url_fields: ["dest", "target_url", "$.request.destination.url"]

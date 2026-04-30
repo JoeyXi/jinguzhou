@@ -263,3 +263,70 @@ def test_tool_policy_supports_nested_jsonpath_like_extractors() -> None:
 
     assert network_result.action == "require_human_review"
     assert filesystem_result.action == "block"
+
+
+def test_file_access_policy_pack_blocks_system_write_and_reviews_env_file() -> None:
+    policy = load_policy_file(Path("rules/tool_file_access.yaml"))
+    engine = PolicyEngine(policy)
+
+    system_write = engine.evaluate(
+        EvaluationContext(
+            stage="tool",
+            tool_name="filesystem.write",
+            tool_payload={"path": "/etc/hosts", "content": "demo"},
+        )
+    )
+    env_read = engine.evaluate(
+        EvaluationContext(
+            stage="tool",
+            tool_name="filesystem.read",
+            tool_payload={"path": "/Users/jx/project/.env"},
+        )
+    )
+
+    assert system_write.action == "block"
+    assert system_write.matched_rules[0].rule_id == "tool.file.system_write.block"
+    assert env_read.action == "require_human_review"
+    assert env_read.matched_rules[0].rule_id == "tool.file.secret_path.review"
+
+
+def test_network_access_policy_pack_blocks_private_and_metadata_targets() -> None:
+    policy = load_policy_file(Path("rules/tool_network_access.yaml"))
+    engine = PolicyEngine(policy)
+
+    metadata_result = engine.evaluate(
+        EvaluationContext(
+            stage="tool",
+            tool_name="network.request",
+            tool_payload={"url": "http://169.254.169.254/latest/meta-data"},
+        )
+    )
+    private_result = engine.evaluate(
+        EvaluationContext(
+            stage="tool",
+            tool_name="network.request",
+            tool_payload={"url": "http://127.0.0.1:8080/admin"},
+        )
+    )
+
+    assert metadata_result.action == "block"
+    assert metadata_result.matched_rules[0].rule_id == "tool.network.metadata_endpoint.block"
+    assert private_result.action == "block"
+    assert private_result.matched_rules[0].rule_id == "tool.network.private_target.block"
+
+
+def test_database_access_policy_pack_blocks_nested_destructive_sql() -> None:
+    policy = load_policy_file(Path("rules/tool_database_access.yaml"))
+    engine = PolicyEngine(policy)
+
+    result = engine.evaluate(
+        EvaluationContext(
+            stage="tool",
+            tool_name="database.query",
+            tool_payload={"args": {"sql": "BEGIN; DROP TABLE users; COMMIT;"}},
+            tool_extraction=ToolExtractionConfig(sql_fields=["$.args.sql"]),
+        )
+    )
+
+    assert result.action == "block"
+    assert result.matched_rules[0].rule_id == "tool.database.destructive_operation.block"

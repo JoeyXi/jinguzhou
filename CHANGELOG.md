@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0-alpha - Agent Ecosystem Foundation
+
+- Added public adapter foundation imports under `jinguzhou.adapters`.
+- Added normalized tool-call handling for direct adapter usage.
+- Added extraction support for MCP JSON-RPC `tools/call`, LlamaIndex-style top-level tool calls, and OpenAI Agents-style `function_call` output items.
+- Expanded JSONPath-like extractor support for bracket notation, wildcards, indexes, negative indexes, and recursive key lookup.
+- Added `domain_regex` policy matching for network target controls.
+- Added first-pass file, network, and database tool policy packs.
+- Added tests and release validation for the new adapter, extractor, and policy-pack behavior.
+
 ## 0.2.1 - Developer Infrastructure
 
 - Added Docker Compose gateway startup.

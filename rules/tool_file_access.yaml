@@ -1,0 +1,56 @@
+version: 1
+name: tool-file-access
+description: First-pass file access policy pack for agent tool calls.
+rules:
+  - id: tool.file.system_write.block
+    stage: tool
+    category: filesystem
+    severity: critical
+    action: block
+    reason: Writes to system paths are blocked.
+    match:
+      tool_name: filesystem.write
+      path_sensitivity_in:
+        - system
+
+  - id: tool.file.secret_path.review
+    stage: tool
+    category: filesystem
+    severity: high
+    action: require_human_review
+    reason: Access to secret-bearing paths requires review.
+    match:
+      path_sensitivity_in:
+        - secrets
+
+  - id: tool.file.user_data_write.review
+    stage: tool
+    category: filesystem
+    severity: high
+    action: require_human_review
+    reason: Writes to user data paths require review.
+    match:
+      tool_name: filesystem.write
+      path_sensitivity_in:
+        - user_data
+
+  - id: tool.file.env_file.review
+    stage: tool
+    category: filesystem
+    severity: high
+    action: require_human_review
+    reason: Environment files often contain credentials and require review.
+    match:
+      path_regex:
+        - "(^|/)\\.env($|\\.|/)"
+
+  - id: tool.file.git_metadata_write.block
+    stage: tool
+    category: filesystem
+    severity: critical
+    action: block
+    reason: Writes to Git metadata are blocked.
+    match:
+      tool_name: filesystem.write
+      path_regex:
+        - "(^|/)\\.git(/|$)"

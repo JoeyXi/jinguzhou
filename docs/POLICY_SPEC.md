@@ -60,6 +60,7 @@ MVP matcher keys:
 - `path_sensitivity_in`
 - `domain_in`
 - `domain_suffix_in`
+- `domain_regex`
 - `db_operation_in`
 - `metadata_equals`
 - `model_in`
@@ -164,6 +165,8 @@ Example:
 
 Use `domain_in` or `domain_suffix_in` for payloads that carry `url`, `endpoint`,
 `base_url`, `domain`, `host`, or any adapter-configured equivalent field.
+Use `domain_regex` for target classes such as private IP ranges, loopback hosts,
+or cloud metadata endpoints.
 
 Example:
 

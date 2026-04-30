@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 import re
-from typing import Any, Iterable
+from typing import Any, Iterable, Union
 from urllib.parse import urlparse
 
 from jinguzhou.policy.models import EvaluationContext, ToolExtractionConfig, ToolFacts
@@ -21,6 +21,12 @@ SQL_KEYWORDS = {
     "grant",
     "revoke",
 }
+
+PathToken = tuple[str, Union[str, int, None]]
+
+
+class FieldPathError(ValueError):
+    """Raised when a configured extractor path cannot be parsed."""
 
 
 def flatten_strings(value: Any) -> list[str]:
@@ -48,46 +54,150 @@ def _looks_like_path_expression(field_name: str) -> bool:
     return field_name.startswith("$") or "." in field_name or "[" in field_name
 
 
-def _tokenize_path_expression(expression: str) -> list[str]:
+def _read_path_key(expression: str, start: int) -> tuple[str, int]:
+    end = start
+    while end < len(expression) and expression[end] not in ".[":
+        end += 1
+    key = expression[start:end].strip()
+    if not key:
+        raise FieldPathError(f"Invalid field path expression: {expression}")
+    return key, end
+
+
+def _read_bracket_token(expression: str, start: int) -> tuple[PathToken, int]:
+    end = start + 1
+    quote = ""
+    while end < len(expression):
+        char = expression[end]
+        if quote:
+            if char == quote:
+                quote = ""
+        elif char in {"'", '"'}:
+            quote = char
+        elif char == "]":
+            break
+        end += 1
+
+    if end >= len(expression) or expression[end] != "]":
+        raise FieldPathError(f"Unclosed bracket in field path expression: {expression}")
+
+    raw_content = expression[start + 1 : end].strip()
+    if raw_content == "*":
+        return ("wildcard", None), end + 1
+    if re.fullmatch(r"-?\d+", raw_content):
+        return ("index", int(raw_content)), end + 1
+    if (
+        len(raw_content) >= 2
+        and raw_content[0] == raw_content[-1]
+        and raw_content[0] in {"'", '"'}
+    ):
+        return ("key", raw_content[1:-1]), end + 1
+    if raw_content:
+        return ("key", raw_content), end + 1
+    raise FieldPathError(f"Empty bracket in field path expression: {expression}")
+
+
+def _tokenize_path_expression(expression: str) -> list[PathToken]:
     cleaned = expression.strip()
-    if cleaned.startswith("$."):
-        cleaned = cleaned[2:]
-    elif cleaned.startswith("$"):
-        cleaned = cleaned[1:]
-    return [token for token in re.split(r"\.", cleaned) if token]
+    if not cleaned:
+        return []
+    if cleaned.startswith("$"):
+        index = 1
+    else:
+        index = 0
+
+    tokens: list[PathToken] = []
+    while index < len(cleaned):
+        if cleaned.startswith("..", index):
+            key, index = _read_path_key(cleaned, index + 2)
+            if key == "*":
+                tokens.append(("recursive_wildcard", None))
+            else:
+                tokens.append(("recursive_key", key))
+            continue
+        char = cleaned[index]
+        if char == ".":
+            key, index = _read_path_key(cleaned, index + 1)
+            if key == "*":
+                tokens.append(("wildcard", None))
+            else:
+                tokens.append(("key", key))
+            continue
+        if char == "[":
+            token, index = _read_bracket_token(cleaned, index)
+            tokens.append(token)
+            continue
+        key, index = _read_path_key(cleaned, index)
+        tokens.append(("key", key))
+    return tokens
 
 
-def _resolve_path_token(value: Any, token: str) -> list[Any]:
-    list_match = re.fullmatch(r"([^\[]+)\[(\*|\d+)\]", token)
-    if list_match:
-        key, selector = list_match.groups()
+def _match_dict_key(value: dict[Any, Any], key: str) -> list[Any]:
+    for candidate, item in value.items():
+        if str(candidate).lower() == key.lower():
+            return [item]
+    return []
+
+
+def _recursive_find_key(value: Any, key: str) -> list[Any]:
+    matches: list[Any] = []
+    if isinstance(value, dict):
+        for candidate, item in value.items():
+            if str(candidate).lower() == key.lower():
+                matches.append(item)
+            matches.extend(_recursive_find_key(item, key))
+    elif isinstance(value, list):
+        for item in value:
+            matches.extend(_recursive_find_key(item, key))
+    return matches
+
+
+def _recursive_values(value: Any) -> list[Any]:
+    matches = [value]
+    if isinstance(value, dict):
+        for item in value.values():
+            matches.extend(_recursive_values(item))
+    elif isinstance(value, list):
+        for item in value:
+            matches.extend(_recursive_values(item))
+    return matches
+
+
+def _resolve_path_token(value: Any, token: PathToken) -> list[Any]:
+    kind, selector = token
+    if kind == "key":
+        key = str(selector)
         if isinstance(value, dict):
-            value = value.get(key)
-        else:
-            return []
+            return _match_dict_key(value, key)
+        if isinstance(value, list):
+            matches = []
+            for item in value:
+                if isinstance(item, dict):
+                    matches.extend(_match_dict_key(item, key))
+            return matches
+        return []
+    if kind == "index":
         if not isinstance(value, list):
             return []
-        if selector == "*":
-            return list(value)
         index = int(selector)
+        if index < 0:
+            index = len(value) + index
         return [value[index]] if 0 <= index < len(value) else []
-
-    if token in {"*", "[*]"}:
+    if kind == "wildcard":
         if isinstance(value, list):
             return list(value)
         if isinstance(value, dict):
             return list(value.values())
         return []
-
-    if isinstance(value, dict):
-        for key, item in value.items():
-            if str(key).lower() == token.lower():
-                return [item]
+    if kind == "recursive_key":
+        return _recursive_find_key(value, str(selector))
+    if kind == "recursive_wildcard":
+        return _recursive_values(value)
     return []
 
 
 def resolve_field_path(payload: Any, expression: str) -> list[Any]:
-    """Resolve a small JSONPath-like expression against a payload."""
+    """Resolve a JSONPath-like extractor expression against a payload."""
     values = [payload]
     for token in _tokenize_path_expression(expression):
         next_values = []
@@ -101,15 +211,15 @@ def resolve_field_path(payload: Any, expression: str) -> list[Any]:
 
 def extract_candidate_values(payload: Any, field_names: Iterable[str]) -> list[str]:
     """Extract string values from top-level fields or JSONPath-like expressions."""
-    if not isinstance(payload, dict):
-        return []
-
-    expected = {name.lower() for name in field_names}
     values = []
     for field_name in field_names:
         if _looks_like_path_expression(field_name):
             for value in resolve_field_path(payload, field_name):
                 values.extend(flatten_strings(value))
+    if not isinstance(payload, dict):
+        return values
+
+    expected = {name.lower() for name in field_names}
     for key, value in payload.items():
         if str(key).lower() in expected:
             values.extend(flatten_strings(value))
@@ -163,9 +273,9 @@ def extract_tool_facts(context: EvaluationContext) -> ToolFacts:
 
     db_operations = {value.lower() for value in extract_candidate_values(payload, config.db_operation_fields)}
     for sql in extract_candidate_values(payload, config.sql_fields):
-        keyword = sql.strip().split(maxsplit=1)[0].lower() if sql.strip() else ""
-        if keyword in SQL_KEYWORDS:
-            db_operations.add(keyword)
+        for keyword in re.findall(r"\b[a-zA-Z_]+\b", sql.lower()):
+            if keyword in SQL_KEYWORDS:
+                db_operations.add(keyword)
 
     return ToolFacts(
         commands=commands,

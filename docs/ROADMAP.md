@@ -62,6 +62,17 @@ local gateway.
 - local dashboard status page
 - admin API key guard for control-plane endpoints
 
+## 0.3.0-alpha Agent Ecosystem
+
+- adapter foundation namespace under `jinguzhou.adapters`
+- normalized tool-call API for agent framework payloads
+- MCP JSON-RPC `tools/call` extraction
+- LlamaIndex-style top-level tool call extraction
+- OpenAI Agents-style `function_call` extraction
+- expanded JSONPath-like extractor support
+- first-pass file, network, and database policy packs
+- release validation coverage for v0.3 policy packs
+
 See [0.2 release plan](V0.2_RELEASE_PLAN.md).
 
 ## External Release Tasks
