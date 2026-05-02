@@ -50,13 +50,15 @@ Current features:
 - signed human approval tokens
 - JSONL audit logs with query and replay CLI
 - adapter foundation for OpenAI, MCP, LangChain, LlamaIndex-style, OpenAI Agents-style, and custom tools
+- MCP adapter helpers for JSON-RPC `tools/call`
+- LangChain-style middleware for pre-execution tool checks
 - JSONPath-like nested extractor support for tool payloads
 - first-pass file, network, and database policy packs
 
 ## Status
 
 This repository is a developer preview. The current package version is
-`0.3.0-alpha`.
+`0.3.0-beta`.
 
 The current codebase provides:
 
@@ -65,6 +67,7 @@ The current codebase provides:
 - nested JSONPath-like tool payload extraction
 - configurable tool adapter registry
 - normalized agent tool-call adapter API
+- MCP adapter helpers and LangChain-style middleware
 - file, network, and database tool policy packs
 - signed approval token flow for `require_human_review`
 - audit event model, JSONL logger, query, and replay helpers
@@ -154,6 +157,13 @@ PYTHONPATH=src python3 -m jinguzhou.cli check-tool network.request \
   --payload '{"url":"http://169.254.169.254/latest/meta-data"}'
 ```
 
+Run MCP and LangChain examples:
+
+```bash
+PYTHONPATH=src python3 examples/mcp-tool-security/demo.py
+PYTHONPATH=src python3 examples/langchain-tool-policy/demo.py
+```
+
 Issue an approval token:
 
 ```bash
@@ -178,7 +188,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli audit query .jinguzhou/audit.jsonl \
 Build the local image:
 
 ```bash
-docker build -t jinguzhou:0.3.0-alpha .
+docker build -t jinguzhou:0.3.0-beta .
 ```
 
 Run the gateway:
@@ -187,7 +197,7 @@ Run the gateway:
 docker run --rm -p 8787:8787 \
   -e OPENAI_API_KEY="$OPENAI_API_KEY" \
   -e JINGUZHOU_APPROVAL_SECRET=change_me \
-  jinguzhou:0.3.0-alpha
+  jinguzhou:0.3.0-beta
 ```
 
 Or use Docker Compose:
@@ -302,6 +312,8 @@ Example entry points:
 
 - `examples/openai-compatible-proxy/`
 - `examples/agent-tool-security/`
+- `examples/mcp-tool-security/`
+- `examples/langchain-tool-policy/`
 - `examples/dev_quickstart/`
 
 Key docs:
@@ -313,6 +325,7 @@ Key docs:
 - [OpenAI-compatible proxy guide](docs/OPENAI_COMPATIBLE_PROXY.md)
 - [Agent tool security guide](docs/AGENT_TOOL_SECURITY.md)
 - [MCP tool security guide](docs/MCP_TOOL_SECURITY.md)
+- [LangChain tool policy guide](docs/LANGCHAIN_TOOL_POLICY.md)
 - [Postgres audit backend guide](docs/POSTGRES_AUDIT_BACKEND.md)
 - [Validation guide](docs/VALIDATION.md)
 - [Developer setup](docs/DEVELOPER_SETUP.md)

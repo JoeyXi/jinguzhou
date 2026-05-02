@@ -3,8 +3,8 @@ from setuptools import find_packages, setup
 
 setup(
     name="jinguzhou",
-    version="0.3.0-alpha",
-    description="A model-agnostic safety gateway, policy engine, and audit layer for LLM applications.",
+    version="0.3.0-beta",
+    description="OpenAI-compatible LLM gateway and policy engine for AI agents, tool calling, audit logs, human approval, and MCP or LangChain integrations.",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     include_package_data=True,

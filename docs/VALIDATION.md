@@ -21,7 +21,7 @@ PYTHONPATH=src python3 -m pytest
 Expected result:
 
 ```text
-64 passed
+70 passed
 ```
 
 Coverage includes:
@@ -32,6 +32,8 @@ Coverage includes:
 - approval token issue/decode/verification
 - audit query and replay
 - adapter foundation for OpenAI, MCP, LangChain, LlamaIndex-style, and OpenAI Agents-style shapes
+- MCP adapter helper behavior
+- LangChain-style tool middleware behavior
 - nested JSONPath-like extractor mapping with bracket, wildcard, index, and recursive key support
 - file, network, and database policy packs
 - runnable validation examples
@@ -78,7 +80,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli version
 Expected:
 
 ```text
-0.3.0-alpha
+0.3.0-beta
 ```
 
 ```bash
@@ -99,6 +101,13 @@ v0.3 policy pack smoke test:
 PYTHONPATH=src python3 -m jinguzhou.cli check-tool network.request \
   --policy rules/tool_network_access.yaml \
   --payload '{"url":"http://169.254.169.254/latest/meta-data"}'
+```
+
+MCP and LangChain integration examples:
+
+```bash
+PYTHONPATH=src python3 examples/mcp-tool-security/demo.py
+PYTHONPATH=src python3 examples/langchain-tool-policy/demo.py
 ```
 
 Text output:
@@ -135,5 +144,5 @@ PYTHONPATH=src python3 scripts/validate_release.py
 Expected final output:
 
 ```json
-{"status": "ok", "validated": ["pytest", "compileall", "version", "init", "validate_config", "cli_text_output", "dev_quickstart", "validation_examples", "cli_tool_block", "distribution_files"]}
+{"status": "ok", "validated": ["pytest", "compileall", "version", "init", "validate_config", "cli_text_output", "dev_quickstart", "validation_examples", "cli_tool_block", "v0_3_policy_packs", "v0_3_beta_examples", "distribution_files"]}
 ```

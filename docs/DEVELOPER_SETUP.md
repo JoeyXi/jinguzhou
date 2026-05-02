@@ -14,7 +14,7 @@ jinguzhou version
 Expected version:
 
 ```text
-0.3.0-alpha
+0.3.0-beta
 ```
 
 ## Create A Starter Project
@@ -88,7 +88,7 @@ The default tool policy should block writes to sensitive system paths.
 Build the local image:
 
 ```bash
-docker build -t jinguzhou:0.3.0-alpha .
+docker build -t jinguzhou:0.3.0-beta .
 ```
 
 Run the gateway:
@@ -97,7 +97,7 @@ Run the gateway:
 docker run --rm -p 8787:8787 \
   -e OPENAI_API_KEY="$OPENAI_API_KEY" \
   -e JINGUZHOU_APPROVAL_SECRET=change_me \
-  jinguzhou:0.3.0-alpha
+  jinguzhou:0.3.0-beta
 ```
 
 Or use Docker Compose from the repository root:

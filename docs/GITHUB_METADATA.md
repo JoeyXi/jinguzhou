@@ -24,11 +24,11 @@ Suggested topics:
 Suggested release title pattern:
 
 ```text
-Jinguzhou 0.3.0-alpha: Agent Tool Firewall, JSONPath Extractors, File Network Database Policy Packs
+Jinguzhou 0.3.0-beta: MCP Adapter, LangChain Tool Middleware, Agent Tool Firewall
 ```
 
 Suggested release summary:
 
 ```text
-Jinguzhou 0.3.0-alpha adds the agent adapter foundation, expanded JSONPath-like extractor support, and first-pass file, network, and database policy packs for agent tool security.
+Jinguzhou 0.3.0-beta adds MCP adapter helpers, LangChain-style pre-execution tool middleware, runnable examples, and validation coverage on top of the agent tool firewall foundation.
 ```

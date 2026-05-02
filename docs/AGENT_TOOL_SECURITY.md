@@ -44,10 +44,13 @@ Current adapter coverage includes:
 
 - OpenAI tool calls
 - MCP-style content blocks and MCP JSON-RPC `tools/call`
-- LangChain tool payloads
+- LangChain tool payloads and pre-execution middleware
 - LlamaIndex-style top-level tool call payloads
 - OpenAI Agents-style `function_call` output items
 - custom tool adapters declared in config
+
+The `jinguzhou.integrations.langchain` middleware raises a
+`ToolPolicyViolation` before a blocked or review-required tool is executed.
 
 ## v0.3 Policy Packs
 

@@ -73,6 +73,14 @@ local gateway.
 - first-pass file, network, and database policy packs
 - release validation coverage for v0.3 policy packs
 
+## 0.3.0-beta Agent Ecosystem
+
+- MCP adapter helper module
+- MCP JSON-RPC `tools/call` example
+- LangChain-style pre-execution tool middleware
+- LangChain policy example
+- release validation coverage for MCP and LangChain examples
+
 See [0.2 release plan](V0.2_RELEASE_PLAN.md).
 
 ## External Release Tasks

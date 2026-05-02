@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0-beta - MCP And LangChain Integrations
+
+- Added MCP adapter helper module for JSON-RPC `tools/call` payloads.
+- Added LangChain-style pre-execution tool middleware.
+- Added MCP tool security and LangChain tool policy runnable examples.
+- Added tests for MCP normalization and LangChain guarded tool execution.
+- Expanded release validation to cover the new integration examples.
+
 ## 0.3.0-alpha - Agent Ecosystem Foundation
 
 - Added public adapter foundation imports under `jinguzhou.adapters`.

@@ -47,7 +47,7 @@ def main() -> None:
     results.append("compileall")
 
     version = run([python, "-m", "jinguzhou.cli", "version"], env_prefix=env)
-    if version != "0.3.0-alpha":
+    if version != "0.3.0-beta":
         raise AssertionError(f"Unexpected version: {version}")
     results.append("version")
 
@@ -167,6 +167,16 @@ def main() -> None:
     if json.loads(network_blocked)["action"] != "block":
         raise AssertionError("metadata endpoint network request should be blocked.")
     results.append("v0_3_policy_packs")
+
+    mcp_example = run([python, "examples/mcp-tool-security/demo.py"], env_prefix=env)
+    if json.loads(mcp_example)["action"] != "block":
+        raise AssertionError("MCP tool security example did not block metadata request.")
+
+    langchain_example = run([python, "examples/langchain-tool-policy/demo.py"], env_prefix=env)
+    langchain_payload = json.loads(langchain_example)
+    if not langchain_payload["blocked"] or langchain_payload["called"]:
+        raise AssertionError("LangChain tool policy example did not block before execution.")
+    results.append("v0_3_beta_examples")
 
     npm_package = json.loads((ROOT / "packages/npm-cli/package.json").read_text(encoding="utf-8"))
     if npm_package["name"] != "@jinguzhou/cli" or "jinguzhou" not in npm_package["bin"]:
