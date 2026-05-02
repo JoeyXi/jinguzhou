@@ -47,7 +47,7 @@ def main() -> None:
     results.append("compileall")
 
     version = run([python, "-m", "jinguzhou.cli", "version"], env_prefix=env)
-    if version != "0.3.0-beta":
+    if version != "0.3.0":
         raise AssertionError(f"Unexpected version: {version}")
     results.append("version")
 
@@ -177,6 +177,18 @@ def main() -> None:
     if not langchain_payload["blocked"] or langchain_payload["called"]:
         raise AssertionError("LangChain tool policy example did not block before execution.")
     results.append("v0_3_beta_examples")
+
+    llamaindex_example = run([python, "examples/llamaindex-tool-policy/demo.py"], env_prefix=env)
+    if json.loads(llamaindex_example)["action"] != "block":
+        raise AssertionError("LlamaIndex tool policy example did not block system file write.")
+
+    openai_agents_example = run(
+        [python, "examples/openai-agents-tool-policy/demo.py"],
+        env_prefix=env,
+    )
+    if json.loads(openai_agents_example)["action"] != "block":
+        raise AssertionError("OpenAI Agents tool policy example did not block destructive SQL.")
+    results.append("v0_3_final_examples")
 
     npm_package = json.loads((ROOT / "packages/npm-cli/package.json").read_text(encoding="utf-8"))
     if npm_package["name"] != "@jinguzhou/cli" or "jinguzhou" not in npm_package["bin"]:

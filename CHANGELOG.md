@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - Agent Ecosystem
+
+- Added LlamaIndex adapter helper module and runnable policy example.
+- Added OpenAI Agents adapter helper module and runnable policy example.
+- Completed v0.3 release validation across MCP, LangChain, LlamaIndex, and OpenAI Agents examples.
+- Updated public docs, release notes, package metadata, Docker, npm, and Helm versions for 0.3.0.
+
 ## 0.3.0-beta - MCP And LangChain Integrations
 
 - Added MCP adapter helper module for JSON-RPC `tools/call` payloads.

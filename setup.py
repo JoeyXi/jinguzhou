@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="jinguzhou",
-    version="0.3.0-beta",
+    version="0.3.0",
     description="OpenAI-compatible LLM gateway and policy engine for AI agents, tool calling, audit logs, human approval, and MCP or LangChain integrations.",
     package_dir={"": "src"},
     packages=find_packages(where="src"),

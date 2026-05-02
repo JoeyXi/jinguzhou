@@ -52,13 +52,14 @@ Current features:
 - adapter foundation for OpenAI, MCP, LangChain, LlamaIndex-style, OpenAI Agents-style, and custom tools
 - MCP adapter helpers for JSON-RPC `tools/call`
 - LangChain-style middleware for pre-execution tool checks
+- LlamaIndex and OpenAI Agents SDK adapter helpers
 - JSONPath-like nested extractor support for tool payloads
 - first-pass file, network, and database policy packs
 
 ## Status
 
 This repository is a developer preview. The current package version is
-`0.3.0-beta`.
+`0.3.0`.
 
 The current codebase provides:
 
@@ -67,7 +68,8 @@ The current codebase provides:
 - nested JSONPath-like tool payload extraction
 - configurable tool adapter registry
 - normalized agent tool-call adapter API
-- MCP adapter helpers and LangChain-style middleware
+- MCP, LlamaIndex, and OpenAI Agents adapter helpers
+- LangChain-style middleware
 - file, network, and database tool policy packs
 - signed approval token flow for `require_human_review`
 - audit event model, JSONL logger, query, and replay helpers
@@ -162,6 +164,8 @@ Run MCP and LangChain examples:
 ```bash
 PYTHONPATH=src python3 examples/mcp-tool-security/demo.py
 PYTHONPATH=src python3 examples/langchain-tool-policy/demo.py
+PYTHONPATH=src python3 examples/llamaindex-tool-policy/demo.py
+PYTHONPATH=src python3 examples/openai-agents-tool-policy/demo.py
 ```
 
 Issue an approval token:
@@ -188,7 +192,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli audit query .jinguzhou/audit.jsonl \
 Build the local image:
 
 ```bash
-docker build -t jinguzhou:0.3.0-beta .
+docker build -t jinguzhou:0.3.0 .
 ```
 
 Run the gateway:
@@ -197,7 +201,7 @@ Run the gateway:
 docker run --rm -p 8787:8787 \
   -e OPENAI_API_KEY="$OPENAI_API_KEY" \
   -e JINGUZHOU_APPROVAL_SECRET=change_me \
-  jinguzhou:0.3.0-beta
+  jinguzhou:0.3.0
 ```
 
 Or use Docker Compose:
@@ -314,6 +318,8 @@ Example entry points:
 - `examples/agent-tool-security/`
 - `examples/mcp-tool-security/`
 - `examples/langchain-tool-policy/`
+- `examples/llamaindex-tool-policy/`
+- `examples/openai-agents-tool-policy/`
 - `examples/dev_quickstart/`
 
 Key docs:
@@ -326,6 +332,8 @@ Key docs:
 - [Agent tool security guide](docs/AGENT_TOOL_SECURITY.md)
 - [MCP tool security guide](docs/MCP_TOOL_SECURITY.md)
 - [LangChain tool policy guide](docs/LANGCHAIN_TOOL_POLICY.md)
+- [LlamaIndex tool policy guide](docs/LLAMAINDEX_TOOL_POLICY.md)
+- [OpenAI Agents tool policy guide](docs/OPENAI_AGENTS_TOOL_POLICY.md)
 - [Postgres audit backend guide](docs/POSTGRES_AUDIT_BACKEND.md)
 - [Validation guide](docs/VALIDATION.md)
 - [Developer setup](docs/DEVELOPER_SETUP.md)

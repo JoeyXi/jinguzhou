@@ -72,7 +72,7 @@ def test_dashboard_endpoint_reports_gateway_status() -> None:
 
     assert response.status_code == 200
     assert "Jinguzhou Gateway" in response.text
-    assert "0.3.0-beta" in response.text
+    assert "0.3.0" in response.text
 
 
 def test_pending_approvals_endpoint_is_extension_point() -> None:

@@ -1,6 +1,6 @@
 image:
   repository: jinguzhou
-  tag: "0.3.0-beta"
+  tag: "0.3.0"
   pullPolicy: IfNotPresent
 
 service:

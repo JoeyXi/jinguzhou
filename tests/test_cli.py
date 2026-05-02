@@ -14,7 +14,7 @@ def test_version_command() -> None:
     result = runner.invoke(app, ["version"])
 
     assert result.exit_code == 0
-    assert "0.3.0-beta" in result.stdout
+    assert "0.3.0" in result.stdout
 
 
 def test_init_command_creates_config_and_rules(tmp_path: Path) -> None:

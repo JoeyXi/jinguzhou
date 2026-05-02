@@ -24,11 +24,11 @@ Suggested topics:
 Suggested release title pattern:
 
 ```text
-Jinguzhou 0.3.0-beta: MCP Adapter, LangChain Tool Middleware, Agent Tool Firewall
+Jinguzhou 0.3.0: Agent Tool Firewall for MCP, LangChain, LlamaIndex, and OpenAI Agents
 ```
 
 Suggested release summary:
 
 ```text
-Jinguzhou 0.3.0-beta adds MCP adapter helpers, LangChain-style pre-execution tool middleware, runnable examples, and validation coverage on top of the agent tool firewall foundation.
+Jinguzhou 0.3.0 adds MCP, LangChain, LlamaIndex, and OpenAI Agents integration helpers, runnable examples, JSONPath extractors, and file/network/database policy packs for agent tool security.
 ```

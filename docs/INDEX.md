@@ -13,8 +13,11 @@ This index groups the main docs by common search terms and setup tasks.
 - [Agent tool security](AGENT_TOOL_SECURITY.md)
 - [MCP tool security](MCP_TOOL_SECURITY.md)
 - [LangChain tool policy](LANGCHAIN_TOOL_POLICY.md)
+- [LlamaIndex tool policy](LLAMAINDEX_TOOL_POLICY.md)
+- [OpenAI Agents tool policy](OPENAI_AGENTS_TOOL_POLICY.md)
 - [v0.3 alpha plan](V0.3_ALPHA_PLAN.md)
 - [v0.3 beta plan](V0.3_BETA_PLAN.md)
+- [v0.3 release plan](V0.3_RELEASE_PLAN.md)
 - [Policy spec](POLICY_SPEC.md)
 - [Approval flow](APPROVALS.md)
 
@@ -31,4 +34,5 @@ This index groups the main docs by common search terms and setup tasks.
 - [Release notes v0.2.1](RELEASE_NOTES_v0.2.1.md)
 - [Release notes v0.3.0-alpha](RELEASE_NOTES_v0.3.0-alpha.md)
 - [Release notes v0.3.0-beta](RELEASE_NOTES_v0.3.0-beta.md)
+- [Release notes v0.3.0](RELEASE_NOTES_v0.3.0.md)
 - [GitHub metadata](GITHUB_METADATA.md)

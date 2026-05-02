@@ -81,6 +81,13 @@ local gateway.
 - LangChain policy example
 - release validation coverage for MCP and LangChain examples
 
+## 0.3.0 Agent Ecosystem
+
+- LlamaIndex adapter helper module
+- OpenAI Agents adapter helper module
+- LlamaIndex and OpenAI Agents runnable examples
+- release validation coverage for all v0.3 agent ecosystem examples
+
 See [0.2 release plan](V0.2_RELEASE_PLAN.md).
 
 ## External Release Tasks

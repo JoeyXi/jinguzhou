@@ -2,5 +2,5 @@ apiVersion: v2
 name: jinguzhou
 description: OpenAI-compatible LLM gateway and policy engine for agent tool security and audit logging
 type: application
-version: 0.3.0-beta
-appVersion: "0.3.0-beta"
+version: 0.3.0
+appVersion: "0.3.0"
