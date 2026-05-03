@@ -1,26 +1,26 @@
 # LlamaIndex Tool Policy
 
-Jinguzhou provides a lightweight LlamaIndex-style adapter for normalizing tool
-selection payloads before execution.
+Jinguzhou provides a lightweight LlamaIndex-style middleware wrapper for
+checking tool calls before execution.
 
-The helper does not import LlamaIndex directly. It accepts the common payload
-shape of a framework name plus top-level `tool_calls`, then maps the selected
-tool into the shared `NormalizedToolCall` model.
+The helper does not import LlamaIndex directly. It wraps tool-like objects and
+uses the shared tool firewall middleware for policy, approval, and audit.
 
 ## Example
 
 ```python
-from jinguzhou.adapters.llamaindex import (
-    LlamaIndexToolAdapter,
-    build_llamaindex_tool_call,
+from jinguzhou.integrations.llamaindex import (
+    JinguzhouLlamaIndexMiddleware,
+    guard_tool,
 )
+from jinguzhou.policy.engine import PolicyEngine
+from jinguzhou.policy.loader import load_policy_file
 
-adapter = LlamaIndexToolAdapter()
-payload = build_llamaindex_tool_call(
-    "filesystem.write",
-    {"path": "/etc/hosts", "content": "demo"},
+middleware = JinguzhouLlamaIndexMiddleware(
+    PolicyEngine(load_policy_file("rules/tool_file_access.yaml"))
 )
-tool_call = adapter.normalize_tool_selection(payload)
+guarded_tool = guard_tool(existing_tool, middleware)
+guarded_tool.call({"path": "README.md"})
 ```
 
 ## Runnable Example

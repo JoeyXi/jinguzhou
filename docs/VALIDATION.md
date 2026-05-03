@@ -21,7 +21,7 @@ PYTHONPATH=src python3 -m pytest
 Expected result:
 
 ```text
-76 passed
+84 passed
 ```
 
 Coverage includes:
@@ -34,10 +34,12 @@ Coverage includes:
 - adapter foundation for OpenAI, MCP, LangChain, LlamaIndex-style, and OpenAI Agents-style shapes
 - MCP adapter helper behavior
 - LangChain-style tool middleware behavior
-- LlamaIndex adapter helper behavior
-- OpenAI Agents adapter helper behavior
+- LlamaIndex middleware behavior
+- OpenAI Agents middleware behavior
+- MCP runtime middleware behavior
 - nested JSONPath-like extractor mapping with bracket, wildcard, index, and recursive key support
 - file, network, and database policy packs
+- approval and audit closure for tool middleware flows
 - runnable validation examples
 
 ## 3. Run Offline Validation Examples
@@ -105,7 +107,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli check-tool network.request \
   --payload '{"url":"http://169.254.169.254/latest/meta-data"}'
 ```
 
-MCP and LangChain integration examples:
+Agent middleware examples:
 
 ```bash
 PYTHONPATH=src python3 examples/mcp-tool-security/demo.py

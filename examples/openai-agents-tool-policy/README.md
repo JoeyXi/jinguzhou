@@ -1,7 +1,7 @@
 # OpenAI Agents Tool Policy Example
 
-This example normalizes an OpenAI Agents-style `function_call` output item and
-evaluates it with the Jinguzhou database policy pack.
+This example wraps an OpenAI Agents-style tool callable and blocks destructive
+SQL before execution.
 
 Run from the repository root:
 

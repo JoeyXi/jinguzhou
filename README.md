@@ -50,11 +50,12 @@ Current features:
 - signed human approval tokens
 - JSONL audit logs with query and replay CLI
 - adapter foundation for OpenAI, MCP, LangChain, LlamaIndex-style, OpenAI Agents-style, and custom tools
-- MCP adapter helpers for JSON-RPC `tools/call`
+- MCP runtime middleware for JSON-RPC `tools/call`
 - LangChain-style middleware for pre-execution tool checks
-- LlamaIndex and OpenAI Agents SDK adapter helpers
+- LlamaIndex and OpenAI Agents-style middleware wrappers
 - JSONPath-like nested extractor support for tool payloads
 - first-pass file, network, and database policy packs
+- approval and audit hooks for runtime middleware flows
 
 ## Status
 
@@ -68,8 +69,8 @@ The current codebase provides:
 - nested JSONPath-like tool payload extraction
 - configurable tool adapter registry
 - normalized agent tool-call adapter API
-- MCP, LlamaIndex, and OpenAI Agents adapter helpers
-- LangChain-style middleware
+- MCP runtime middleware
+- LangChain, LlamaIndex, and OpenAI Agents middleware
 - file, network, and database tool policy packs
 - signed approval token flow for `require_human_review`
 - audit event model, JSONL logger, query, and replay helpers
@@ -159,7 +160,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli check-tool network.request \
   --payload '{"url":"http://169.254.169.254/latest/meta-data"}'
 ```
 
-Run MCP and LangChain examples:
+Run agent middleware examples:
 
 ```bash
 PYTHONPATH=src python3 examples/mcp-tool-security/demo.py
@@ -255,6 +256,14 @@ Install the optional dependency:
 ```bash
 pip install "jinguzhou[postgres]"
 ```
+
+## Integration Docs
+
+- [MCP tool security](/Users/jx/Desktop/code/jinguzhou/docs/MCP_TOOL_SECURITY.md)
+- [MCP runtime cookbook](/Users/jx/Desktop/code/jinguzhou/docs/MCP_RUNTIME_COOKBOOK.md)
+- [LangChain tool policy](/Users/jx/Desktop/code/jinguzhou/docs/LANGCHAIN_TOOL_POLICY.md)
+- [LlamaIndex tool policy](/Users/jx/Desktop/code/jinguzhou/docs/LLAMAINDEX_TOOL_POLICY.md)
+- [OpenAI Agents tool policy](/Users/jx/Desktop/code/jinguzhou/docs/OPENAI_AGENTS_TOOL_POLICY.md)
 
 ## Local Dashboard
 

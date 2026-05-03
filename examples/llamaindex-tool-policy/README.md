@@ -1,7 +1,7 @@
 # LlamaIndex Tool Policy Example
 
-This example normalizes a LlamaIndex-style tool selection payload and evaluates
-it with the Jinguzhou file policy pack.
+This example wraps a LlamaIndex-style tool object and blocks a system-path write
+before execution.
 
 Run from the repository root:
 

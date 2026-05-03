@@ -1,8 +1,4 @@
-"""LangChain-style tool middleware.
-
-The module avoids importing LangChain directly. It wraps objects that expose the
-usual `name`, `invoke`, `ainvoke`, `run`, or callable interfaces.
-"""
+"""LlamaIndex-style tool middleware."""
 
 from __future__ import annotations
 
@@ -20,8 +16,8 @@ from jinguzhou.policy.models import EvaluationResult
 from jinguzhou.tools.adapters import NormalizedToolCall, ToolAdapterRegistry
 
 
-class JinguzhouToolMiddleware(ToolFirewallMiddleware):
-    """Evaluate LangChain-style tool calls before the wrapped tool executes."""
+class JinguzhouLlamaIndexMiddleware(ToolFirewallMiddleware):
+    """Evaluate LlamaIndex-style tool calls before execution."""
 
     def __init__(
         self,
@@ -31,7 +27,7 @@ class JinguzhouToolMiddleware(ToolFirewallMiddleware):
         audit_logger: Optional[Any] = None,
         approval_manager: Optional[ApprovalTokenManager] = None,
         model: str = "",
-        provider: str = "langchain",
+        provider: str = "llamaindex",
     ) -> None:
         super().__init__(
             policy_engine,
@@ -40,17 +36,16 @@ class JinguzhouToolMiddleware(ToolFirewallMiddleware):
             approval_manager=approval_manager,
             model=model,
             provider=provider,
-            framework="langchain",
+            framework="llamaindex",
         )
 
     def normalize(self, tool_name: str, arguments: Any) -> NormalizedToolCall:
-        """Normalize a LangChain tool invocation."""
         return self.normalize_tool_call(
-            protocol="langchain",
+            protocol="llamaindex",
             tool_name=tool_name,
             arguments=arguments,
             type="tool_call",
-            metadata={"framework": "langchain"},
+            metadata={"framework": "llamaindex"},
         )
 
     def check_call(
@@ -61,12 +56,11 @@ class JinguzhouToolMiddleware(ToolFirewallMiddleware):
         approval_token: str = "",
         request_id: str = "",
     ) -> ToolFirewallDecision:
-        """Evaluate a tool invocation and return the richer firewall decision."""
         return self.evaluate_tool_call(
             self.normalize(tool_name, arguments),
             request_id=request_id,
             approval_token=approval_token,
-            metadata={"framework": "langchain"},
+            metadata={"framework": "llamaindex"},
         )
 
     def check(
@@ -77,7 +71,6 @@ class JinguzhouToolMiddleware(ToolFirewallMiddleware):
         approval_token: str = "",
         request_id: str = "",
     ) -> EvaluationResult:
-        """Evaluate a tool invocation and raise when policy blocks execution."""
         return self.check_call(
             tool_name,
             arguments,
@@ -86,10 +79,10 @@ class JinguzhouToolMiddleware(ToolFirewallMiddleware):
         ).result
 
 
-class GuardedLangChainTool:
-    """Small wrapper for LangChain-like tool objects."""
+class GuardedLlamaIndexTool:
+    """Wrapper for LlamaIndex-like tool objects."""
 
-    def __init__(self, tool: Any, middleware: JinguzhouToolMiddleware) -> None:
+    def __init__(self, tool: Any, middleware: JinguzhouLlamaIndexMiddleware) -> None:
         self._tool = tool
         self._middleware = middleware
 
@@ -98,10 +91,19 @@ class GuardedLangChainTool:
 
     @property
     def name(self) -> str:
-        return _tool_name(self._tool)
+        metadata = getattr(self._tool, "metadata", None)
+        metadata_name = getattr(metadata, "name", "")
+        if metadata_name:
+            return str(metadata_name)
+        name = getattr(self._tool, "name", "")
+        if name:
+            return str(name)
+        function_name = getattr(self._tool, "__name__", "")
+        if function_name:
+            return str(function_name)
+        return self._tool.__class__.__name__
 
-    def invoke(self, input: Any, config: Any = None, **kwargs: Any) -> Any:
-        """Guard and invoke a LangChain-style tool."""
+    def call(self, input: Any, **kwargs: Any) -> Any:
         approval_token = str(kwargs.pop("jinguzhou_approval_token", ""))
         request_id = str(kwargs.pop("jinguzhou_request_id", ""))
         self._middleware.check(
@@ -110,16 +112,15 @@ class GuardedLangChainTool:
             approval_token=approval_token,
             request_id=request_id,
         )
+        if hasattr(self._tool, "call"):
+            return self._tool.call(input, **kwargs)
         if hasattr(self._tool, "invoke"):
-            return self._tool.invoke(input, config=config, **kwargs)
+            return self._tool.invoke(input, **kwargs)
         if callable(self._tool):
-            if config is None:
-                return self._tool(input, **kwargs)
-            return self._tool(input, config=config, **kwargs)
-        raise TypeError("Wrapped tool does not expose invoke or callable behavior.")
+            return self._tool(input, **kwargs)
+        raise TypeError("Wrapped tool does not expose call, invoke, or callable behavior.")
 
-    async def ainvoke(self, input: Any, config: Any = None, **kwargs: Any) -> Any:
-        """Guard and invoke an async LangChain-style tool."""
+    async def acall(self, input: Any, **kwargs: Any) -> Any:
         approval_token = str(kwargs.pop("jinguzhou_approval_token", ""))
         request_id = str(kwargs.pop("jinguzhou_request_id", ""))
         self._middleware.check(
@@ -128,49 +129,28 @@ class GuardedLangChainTool:
             approval_token=approval_token,
             request_id=request_id,
         )
-        if hasattr(self._tool, "ainvoke"):
-            return await self._tool.ainvoke(input, config=config, **kwargs)
-        result = self.invoke(input, config=config, **kwargs)
+        if hasattr(self._tool, "acall"):
+            return await self._tool.acall(input, **kwargs)
+        result = self.call(input, **kwargs)
         if inspect.isawaitable(result):
             return await result
         return result
 
-    def run(self, input: Any, **kwargs: Any) -> Any:
-        """Guard and run tools that expose LangChain's older `run` method."""
-        approval_token = str(kwargs.pop("jinguzhou_approval_token", ""))
-        request_id = str(kwargs.pop("jinguzhou_request_id", ""))
-        self._middleware.check(
-            self.name,
-            input,
-            approval_token=approval_token,
-            request_id=request_id,
-        )
-        if hasattr(self._tool, "run"):
-            return self._tool.run(input, **kwargs)
-        return self.invoke(input, **kwargs)
+    def invoke(self, input: Any, **kwargs: Any) -> Any:
+        return self.call(input, **kwargs)
 
     def __call__(self, input: Any, **kwargs: Any) -> Any:
-        return self.invoke(input, **kwargs)
+        return self.call(input, **kwargs)
 
 
-def _tool_name(tool: Any) -> str:
-    name = getattr(tool, "name", "")
-    if name:
-        return str(name)
-    function_name = getattr(tool, "__name__", "")
-    if function_name:
-        return str(function_name)
-    return tool.__class__.__name__
-
-
-def guard_tool(tool: Any, middleware: JinguzhouToolMiddleware) -> GuardedLangChainTool:
-    """Wrap a LangChain-style tool with Jinguzhou policy checks."""
-    return GuardedLangChainTool(tool, middleware)
+def guard_tool(tool: Any, middleware: JinguzhouLlamaIndexMiddleware) -> GuardedLlamaIndexTool:
+    """Wrap a LlamaIndex-style tool with Jinguzhou policy checks."""
+    return GuardedLlamaIndexTool(tool, middleware)
 
 
 __all__ = [
-    "GuardedLangChainTool",
-    "JinguzhouToolMiddleware",
+    "GuardedLlamaIndexTool",
+    "JinguzhouLlamaIndexMiddleware",
     "ToolFirewallDecision",
     "ToolPolicyViolation",
     "guard_tool",

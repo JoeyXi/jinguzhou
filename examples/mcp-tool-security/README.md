@@ -1,7 +1,7 @@
 # MCP Tool Security Example
 
-This example shows how to normalize an MCP `tools/call` request and evaluate it
-with the Jinguzhou network policy pack before a tool runtime executes it.
+This example shows how to guard an MCP `tools/call` request with the Jinguzhou
+runtime middleware before a tool executor runs it.
 
 Run from the repository root:
 

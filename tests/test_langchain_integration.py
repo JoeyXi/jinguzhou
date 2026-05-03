@@ -1,6 +1,9 @@
 import asyncio
+import json
 from pathlib import Path
 
+from jinguzhou.approvals.tokens import ApprovalTokenManager
+from jinguzhou.audit.logger import JsonlAuditLogger
 from jinguzhou.integrations.langchain import (
     JinguzhouToolMiddleware,
     ToolPolicyViolation,
@@ -34,6 +37,12 @@ class FakeReadTool:
     async def ainvoke(self, input, config=None):
         self.called = True
         return {"path": input["path"], "content": "demo"}
+
+
+def _read_events(path: Path) -> list[dict[str, object]]:
+    if not path.exists():
+        return []
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
 
 
 def _middleware() -> JinguzhouToolMiddleware:
@@ -77,3 +86,35 @@ def test_langchain_guard_supports_async_invoke() -> None:
         assert tool.called is True
 
     asyncio.run(run_case())
+
+
+def test_langchain_guard_supports_approval_and_audit(tmp_path: Path) -> None:
+    audit_path = tmp_path / "audit.jsonl"
+    manager = ApprovalTokenManager("langchain-secret")
+    policy = load_policy_file(Path("rules/tool_file_access.yaml"))
+    middleware = JinguzhouToolMiddleware(
+        PolicyEngine(policy),
+        audit_logger=JsonlAuditLogger(audit_path),
+        approval_manager=manager,
+    )
+    tool = FakeReadTool()
+    guarded = guard_tool(tool, middleware)
+    token = manager.issue(
+        request_id="req-langchain-review",
+        stage="tool",
+        rule_ids=["tool.file.secret_path.review"],
+        approver="alice",
+    )
+
+    result = guarded.invoke(
+        {"path": "/Users/demo/.ssh/id_rsa"},
+        jinguzhou_request_id="req-langchain-review",
+        jinguzhou_approval_token=token,
+    )
+
+    assert result["path"] == "/Users/demo/.ssh/id_rsa"
+    assert tool.called is True
+
+    events = _read_events(audit_path)
+    assert [event["event_type"] for event in events] == ["policy_decision", "approval"]
+    assert events[-1]["decision"] == "approved"

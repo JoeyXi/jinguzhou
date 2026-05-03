@@ -12,6 +12,7 @@ This index groups the main docs by common search terms and setup tasks.
 
 - [Agent tool security](AGENT_TOOL_SECURITY.md)
 - [MCP tool security](MCP_TOOL_SECURITY.md)
+- [MCP runtime cookbook](MCP_RUNTIME_COOKBOOK.md)
 - [LangChain tool policy](LANGCHAIN_TOOL_POLICY.md)
 - [LlamaIndex tool policy](LLAMAINDEX_TOOL_POLICY.md)
 - [OpenAI Agents tool policy](OPENAI_AGENTS_TOOL_POLICY.md)

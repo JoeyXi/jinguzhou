@@ -24,6 +24,13 @@ result = guarded_tool.invoke({"path": "README.md"})
 If policy returns `block` or `require_human_review`, the wrapper raises
 `ToolPolicyViolation` and the underlying tool is not executed.
 
+If the middleware is configured with an audit logger and approval manager, the
+same tool check can:
+
+- write a `policy_decision` audit event
+- require a signed approval token for `require_human_review`
+- write an `approval` audit event when the token is accepted
+
 ## Runnable Example
 
 ```bash
