@@ -37,7 +37,11 @@ def run(command: list[str], *, env_prefix: dict[str, str] | None = None) -> str:
 
 def main() -> None:
     python = sys.executable
-    env = {"PYTHONPATH": "src", "PYTHONPYCACHEPREFIX": "/tmp/jinguzhou-pycache"}
+    env = {
+        "PYTHONPATH": "src",
+        "PYTHONPYCACHEPREFIX": "/tmp/jinguzhou-pycache",
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    }
     results = []
 
     run([python, "-m", "pytest"], env_prefix=env)
