@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 - Test Compatibility Fix
+
+- Hardened the CLI overwrite test to tolerate `stdout`, combined output, and exception-only error paths across Python, Click, and Typer versions.
+- Kept the `0.3` agent ecosystem feature set unchanged while publishing a clean patch release after the `0.3.1` test failure.
+- Updated package, Docker, npm, Helm, validation, and setup references for `0.3.2`.
+
 ## 0.3.1 - CI Stabilization
 
 - Disabled third-party `pytest` plugin autoloading in CI and release validation to reduce GitHub runner environment drift.

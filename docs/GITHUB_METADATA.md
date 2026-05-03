@@ -24,11 +24,11 @@ Suggested topics:
 Suggested release title pattern:
 
 ```text
-Jinguzhou 0.3.1: Agent Tool Firewall for MCP, LangChain, LlamaIndex, and OpenAI Agents
+Jinguzhou 0.3.2: Agent Tool Firewall for MCP, LangChain, LlamaIndex, and OpenAI Agents
 ```
 
 Suggested release summary:
 
 ```text
-Jinguzhou 0.3.1 keeps the 0.3 agent ecosystem scope and stabilizes CI by disabling third-party pytest plugin autoloading in GitHub runner environments.
+Jinguzhou 0.3.2 keeps the 0.3 agent ecosystem scope and fixes the remaining cross-version CLI test issue that caused the 0.3.1 workflow failure.
 ```

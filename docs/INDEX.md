@@ -36,4 +36,5 @@ This index groups the main docs by common search terms and setup tasks.
 - [Release notes v0.3.0-beta](RELEASE_NOTES_v0.3.0-beta.md)
 - [Release notes v0.3.0](RELEASE_NOTES_v0.3.0.md)
 - [Release notes v0.3.1](RELEASE_NOTES_v0.3.1.md)
+- [Release notes v0.3.2](RELEASE_NOTES_v0.3.2.md)
 - [GitHub metadata](GITHUB_METADATA.md)

@@ -59,7 +59,7 @@ Current features:
 ## Status
 
 This repository is a developer preview. The current package version is
-`0.3.1`.
+`0.3.2`.
 
 The current codebase provides:
 
@@ -192,7 +192,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli audit query .jinguzhou/audit.jsonl \
 Build the local image:
 
 ```bash
-docker build -t jinguzhou:0.3.1 .
+docker build -t jinguzhou:0.3.2 .
 ```
 
 Run the gateway:
@@ -201,7 +201,7 @@ Run the gateway:
 docker run --rm -p 8787:8787 \
   -e OPENAI_API_KEY="$OPENAI_API_KEY" \
   -e JINGUZHOU_APPROVAL_SECRET=change_me \
-  jinguzhou:0.3.1
+  jinguzhou:0.3.2
 ```
 
 Or use Docker Compose:

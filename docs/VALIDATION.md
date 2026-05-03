@@ -82,7 +82,7 @@ PYTHONPATH=src python3 -m jinguzhou.cli version
 Expected:
 
 ```text
-0.3.1
+0.3.2
 ```
 
 ```bash
