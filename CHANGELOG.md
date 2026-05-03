@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 - CI Stabilization
+
+- Disabled third-party `pytest` plugin autoloading in CI and release validation to reduce GitHub runner environment drift.
+- Kept the 0.3 agent ecosystem feature set unchanged while publishing a clean patch release.
+- Updated package, Docker, npm, Helm, validation, and setup references for 0.3.1.
+
 ## 0.3.0 - Agent Ecosystem
 
 - Added LlamaIndex adapter helper module and runnable policy example.
