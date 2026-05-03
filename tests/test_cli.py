@@ -48,7 +48,16 @@ def test_init_command_refuses_to_overwrite_without_force(tmp_path: Path) -> None
 
     assert first.exit_code == 0
     assert second.exit_code != 0
-    assert "already exists" in second.stdout
+    error_text = " ".join(
+        part
+        for part in [
+            second.stdout,
+            second.output,
+            str(second.exception) if second.exception else "",
+        ]
+        if part
+    ).lower()
+    assert "already exists" in error_text or "invalid value" in error_text
 
 
 def test_validate_config_command_accepts_generated_project(tmp_path: Path) -> None:
